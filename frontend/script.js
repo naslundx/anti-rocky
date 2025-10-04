@@ -4,11 +4,13 @@ import { OrbitControls } from "https://unpkg.com/three@0.158.0/examples/jsm/cont
 const infoBox = document.getElementById("info-box");
 const select = document.getElementById("obj-select");
 const dateInput = document.getElementById("obs-date");
+const container = document.getElementById("three-container");
 
+const AU = 30;
 let ASTEROIDS = {};
 let circleLayer = null;
 
-fetch("http://api.defending.earth/objects/")
+fetch("https://api.defending.earth/objects/")
   .then((result) => result.json())
   .then((json) => {
     localStorage.setItem("objects", JSON.stringify(json));
@@ -29,7 +31,7 @@ async function updateInfo(key) {
 
   if (data.size_m === undefined) {
     let response = await fetch(
-      `http://api.defending.earth/objects/${key}/`,
+      `https://api.defending.earth/objects/${key}/`,
     ).then((response) => response.json());
     ASTEROIDS[key] = {
       ...ASTEROIDS[key],
@@ -50,7 +52,7 @@ async function updateInfo(key) {
 
   if (COLLISION) {
     const mapData = await fetch(
-      `http://api.defending.earth/objects/${key}/impact`,
+      `https://api.defending.earth/objects/${key}/impact`,
     ).then((response) => response.json());
 
     if (circleLayer) {
@@ -76,7 +78,6 @@ dateInput.addEventListener("change", () => {
 });
 
 (function initThree() {
-  const container = document.getElementById("three-container");
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x000000);
 
@@ -105,8 +106,6 @@ dateInput.addEventListener("change", () => {
   );
   scene.add(sunMesh);
 
-  // Planet orbits (hardcoded major/minor axes)
-  const AU = 30;
   const planetOrbits = [
     { a: 0.39, b: 0.39 },
     { a: 0.72, b: 0.72 },
@@ -156,7 +155,7 @@ dateInput.addEventListener("change", () => {
     }
     async generateEllipse(data) {
       const json = await fetch(
-        `http://api.defending.earth/objects/${data.id}/orbit/`,
+        `https://api.defending.earth/objects/${data.id}/orbit/`,
       )
         .then((response) => response.json())
         .then((json) =>
