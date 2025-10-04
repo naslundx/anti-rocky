@@ -56,6 +56,11 @@ def get_object_orbit(neo_id: str):
     return compute_orbit(), 200
 
 
+@app.route("/api/", methods=["GET"])
+def get_api():
+    return "Hello, Space!"
+
+
 @app.route("/api/earth/orbit/", methods=["GET"])
 def get_earth_orbit():
     return compute_earth_orbit()
