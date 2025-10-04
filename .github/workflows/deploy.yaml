@@ -80,3 +80,5 @@ jobs:
       - name: Terraform Apply
         working-directory: ${{ env.TERRAFORM_DIR }}
         run: terraform apply -auto-approve -lock-timeout=5m
+        env:
+          TF_VAR_NEO_API_KEY: ${{ secrets.NEO_API_KEY }}
