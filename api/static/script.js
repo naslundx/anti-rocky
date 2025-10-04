@@ -10,7 +10,7 @@ const AU = 30;
 let ASTEROIDS = {};
 let circleLayer = null;
 
-fetch("https://api.defending.earth/objects/")
+fetch("/api/objects/")
   .then((result) => result.json())
   .then((json) => {
     localStorage.setItem("objects", JSON.stringify(json));
@@ -31,7 +31,7 @@ async function updateInfo(key) {
 
   if (data.size_m === undefined) {
     let response = await fetch(
-      `https://api.defending.earth/objects/${key}/`,
+      `/api/objects/${key}/`,
     ).then((response) => response.json());
     ASTEROIDS[key] = {
       ...ASTEROIDS[key],
@@ -54,7 +54,7 @@ async function updateInfo(key) {
 
   if (COLLISION) {
     const mapData = await fetch(
-      `https://api.defending.earth/objects/${key}/impact`,
+      `/api/objects/${key}/impact`,
     ).then((response) => response.json());
 
     if (circleLayer) {
@@ -157,7 +157,7 @@ dateInput.addEventListener("change", () => {
     }
     async generateEllipse(data) {
       const json = await fetch(
-        `https://api.defending.earth/objects/${data.id}/orbit/`,
+        `/api/objects/${data.id}/orbit/`,
       )
         .then((response) => response.json())
         .then((json) =>

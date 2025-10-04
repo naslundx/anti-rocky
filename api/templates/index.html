@@ -9,7 +9,7 @@
             href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
             crossorigin=""
         />
-        <link rel="stylesheet" href="style.css" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
         <script type="importmap">
             {
                 "imports": {
@@ -121,7 +121,7 @@
         </div>
 
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-        <script type="module" src="script.js"></script>
-        <script src="math.js"></script>
+        <script type="module" src="{{ url_for('static', filename='script.js') }}"></script>
+        <script src="{{ url_for('static', filename='math.js') }}"></script>
     </body>
 </html>
