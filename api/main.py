@@ -19,6 +19,7 @@ sbdb_client = SBDBClient()
 app = Flask(__name__)
 CORS(app, origins=["http://www.defending.earth", "https://www.defending.earth"])
 
+
 # Redirect to www if we're in prod
 @app.route("/", methods=["GET"])
 def index():
@@ -29,10 +30,12 @@ def index():
 
     return "Hello Space", 200
 
+
 # List objects
 @app.route("/objects/", methods=["GET"])
 def list_objects():
     return neo_client.list(), 200
+
 
 # Detailed object
 @app.route("/objects/<neo_id>/", methods=["GET"])
