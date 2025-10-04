@@ -11,9 +11,17 @@ class FirestoreMiddleware:
     TTL = 60 * 60 * 24
 
     def __init__(self):
-        self.db = firestore.Client()
+        try:
+            self.db = firestore.Client()
+            self.enabled = True
+        except Exception:
+            logging.warn("Firestore credentials not configured, running without cache")
+            self.enabled = False
 
     def get_or_create(self, key: str, func: Callable[[str], dict]):
+        if not self.enabled:
+            return func(key)
+
         now = int(time.time())
         next_expiration = now + self.TTL
         doc_ref = self.db.collection(self.ASTEROID_COLLECTION).document(key)
