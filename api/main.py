@@ -1,8 +1,12 @@
 import os
 
 from flask import Flask, request, redirect
+from clients.neo import NeoClient
 
 env = os.environ.get("env", "development").lower()
+neo_api_key = os.environ.get("neo_api_key", None)
+
+neo_client = NeoClient(neo_api_key)
 
 app = Flask(__name__)
 
@@ -15,6 +19,10 @@ def index():
             return redirect("http://www.defending.earth", code=302)
 
     return "Hello Space", 200
+
+@app.route("/objects/", methods=["GET"])
+def list_objects():
+    return neo_client.list(), 200
 
 
 if __name__ == "__main__":
