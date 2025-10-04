@@ -41,10 +41,12 @@ async function updateInfo(key) {
     };
   }
 
+  let size = `${Math.floor(ASTEROIDS[key].estimated_diameter.meters.estimated_diameter_min)}–${Math.floor(ASTEROIDS[key].estimated_diameter.meters.estimated_diameter_max)}`
+
   infoBox.innerHTML = `
     <div class="info-row"><div class="info-label">Name</div><div>${data.name}</div></div>
-    <div class="info-row"><div class="info-label">Full name</div><div>${data.fullname}</div></div>
-    <div class="info-row"><div class="info-label">Approx. size</div><div>?</div></div>
+    <div class="info-row"><div class="info-label">Full name</div><div>${data.fullname || "-"}</div></div>
+    <div class="info-row"><div class="info-label">Diameter</div><div>${size} meters</div></div>
     <div class="info-row"><div class="info-label">Notes</div><div>?</div></div>
     <div class="info-row"><div class="info-label">Closest distance</div><div>?</div></div>
     <div class="info-row"><div class="info-label">Current distance</div><div>?</div></div>
