@@ -28,6 +28,7 @@ provider "google" {
 variable "gcp_services" {
   type = list(string)
   default = [
+    "iam.googleapis.com"
     #    "secretmanager.googleapis.com",
     #    "cloudfunctions.googleapis.com",
     #    "pubsub.googleapis.com",
