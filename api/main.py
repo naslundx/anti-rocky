@@ -1,6 +1,7 @@
 import os
 
 from flask import Flask, request, redirect
+from flask_cors import CORS
 
 from api.clients.sbdb import SBDBClient
 from clients.neo import NeoClient
@@ -12,6 +13,8 @@ neo_client = NeoClient(neo_api_key)
 sbdb_client = SBDBClient()
 
 app = Flask(__name__)
+
+CORS(app, origins=["http://www.defending.earth", "https://www.defending.earth"])
 
 
 @app.route("/", methods=["GET"])
