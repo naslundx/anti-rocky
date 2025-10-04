@@ -1,12 +1,15 @@
 import os
 
 from flask import Flask, request, redirect
+
+from api.clients.sbdb import SBDBClient
 from clients.neo import NeoClient
 
 env = os.environ.get("env", "development").lower()
 neo_api_key = os.environ.get("neo_api_key", None)
 
 neo_client = NeoClient(neo_api_key)
+sbdb_client = SBDBClient()
 
 app = Flask(__name__)
 
@@ -20,9 +23,15 @@ def index():
 
     return "Hello Space", 200
 
+
 @app.route("/objects/", methods=["GET"])
 def list_objects():
     return neo_client.list(), 200
+
+
+@app.route("/objects/<neo_id>", methods=["GET"])
+def get_object(neo_id: str):
+    return sbdb_client.get(neo_id), 200
 
 
 if __name__ == "__main__":

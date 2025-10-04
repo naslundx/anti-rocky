@@ -1,5 +1,4 @@
 import logging
-import os
 
 import requests
 
@@ -26,7 +25,3 @@ class NeoClient:
                     "id": neo_object["id"],
                 })
         return computed_neo_objects
-
-
-client = NeoClient(os.getenv("neo_api_key"))
-print(client.list())
