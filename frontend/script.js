@@ -224,11 +224,11 @@ dateInput.addEventListener("change", () => {
     maxZoom: 19,
     attribution: "© OpenStreetMap contributors",
   }).addTo(map);
-  const center = [34.0522, -118.2437];
+  const center = [55.6761, 12.5683];
   const radiusMeters = 500000;
   L.circle(center, { radius: radiusMeters }).addTo(map);
   L.marker(center)
     .addTo(map)
-    .bindPopup("Hardcoded center (Los Angeles)")
+    .bindPopup("Hardcoded center (Denmark)")
     .openPopup();
 })();
