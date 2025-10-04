@@ -13,7 +13,7 @@ variable "sa_compute_iam" {
 
 resource "google_project_iam_member" "compute_iam" {
   depends_on = [google_service_account.compute]
-  for_each = toset(var.sa_compute_iam)
+  for_each   = toset(var.sa_compute_iam)
 
   project = var.gcp_project
   role    = each.value
