@@ -46,7 +46,6 @@
             <section class="panel" id="tab-1">
                 <div class="panel-header">
                     <h2>Find asteroid</h2>
-                    <div class="subtitle">Date & selection</div>
                 </div>
                 <div class="controls">
                     <label for="obs-date">Date</label>
@@ -72,8 +71,7 @@
                     <div id="three-container"></div>
                 </div>
                 <footer class="note">
-                    Note: Orbit computation is simplified — real orbital
-                    dynamics will be added later.
+                    Note: uses simplified 2-body Keplerian orbit calculations.
                 </footer>
             </section>
 
@@ -83,6 +81,20 @@
                     <div class="subtitle">...</div>
                 </div>
                 <div class="map-container">
+                    <div class="info-box" id="info-box">
+                        <div style="color: var(--muted)">
+                            <div class="info-row">
+                                <div class="info-label">
+                                    Estimated casualties
+                                </div>
+                                <div>?</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-label">Other consequences</div>
+                                <div>?</div>
+                            </div>
+                        </div>
+                    </div>
                     <div
                         style="
                             display: flex;
