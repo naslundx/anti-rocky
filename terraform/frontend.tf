@@ -16,4 +16,5 @@ resource "google_storage_bucket_object" "frontend_files" {
     "jpg"  = "image/jpeg",
     "svg"  = "image/svg+xml",
   }, reverse(split(".", each.value))[0], "application/octet-stream")
+  cache_control = "no-cache, max-age=0"
 }
