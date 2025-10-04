@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
-        <title>anti rocky — asteroids & impacts</title>
+        <title>anti rocky</title>
         <link
             rel="stylesheet"
             href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -24,7 +24,8 @@
             <div>
                 <h1>anti rocky</h1>
                 <div class="subtitle">
-                    filter · visualize · discuss — asteroids & meteorite impacts
+                    Daniel Hansson, Johan Niklasson, Marcus Näslund - for the
+                    NASA Space Apps Challenge 2025
                 </div>
             </div>
         </header>
@@ -53,18 +54,13 @@
                 </div>
                 <div class="viz">
                     <div style="display: flex; gap: 12px; align-items: center">
-                        <div class="subtitle">
-                            3D Solar view (placeholder orbit computation)
-                        </div>
                         <div
                             style="
                                 margin-left: auto;
                                 font-size: 12px;
                                 color: var(--muted);
                             "
-                        >
-                            animated
-                        </div>
+                        ></div>
                     </div>
                     <div id="three-container"></div>
                 </div>
@@ -100,15 +96,13 @@
                         </div>
                     </div>
                     <div id="map"></div>
-                    <footer class="note">
-                        Daniel Hansson, Johan Niklasson, Marcus Näslund - for
-                        the NASA Space Apps Challenge 2025
-                    </footer>
+                    <footer class="note"></footer>
                 </div>
             </section>
         </div>
 
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
         <script type="module" src="script.js"></script>
+        <script src="math.js"></script>
     </body>
 </html>

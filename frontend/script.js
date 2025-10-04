@@ -1,6 +1,8 @@
 import * as THREE from "three";
 import { OrbitControls } from "https://unpkg.com/three@0.158.0/examples/jsm/controls/OrbitControls.js";
 
+/* SPACE VIEW */
+
 const ASTEROIDS = {
   apophis: {
     name: "99942 Apophis",
@@ -41,6 +43,7 @@ function updateInfo(key) {
       '<div style="color:var(--muted)">Select a date and an object to see details here.</div>';
     return;
   }
+
   const data = ASTEROIDS[key];
   infoBox.innerHTML = `
     <div class="info-row"><div class="info-label">Name</div><div>${data.name}</div></div>
@@ -49,17 +52,14 @@ function updateInfo(key) {
     <div class="info-row"><div class="info-label">Orbital hints</div><div>a=${data.a} AU · e=${data.e} · i=${data.i}°</div></div>
     <div class="info-row"><div class="info-label">Notes</div><div>${data.notes}</div></div>
   `;
-  if (window.asteroidOrbit) window.asteroidOrbit.updateOrbit(data);
+
+  window.asteroidOrbit?.updateOrbit(data);
 }
 
 select.addEventListener("change", (e) => updateInfo(e.target.value));
 dateInput.addEventListener("change", () => {
-  const d = dateInput.value || "—";
-  const el = document.createElement("div");
-  el.style.color = "var(--muted)";
-  el.style.fontSize = "12px";
-  el.textContent = `Date selected: ${d}`;
-  infoBox.appendChild(el);
+  const d = dateInput.value;
+  console.log("Date chosen: ", d);
 });
 
 (function initThree() {
@@ -85,29 +85,47 @@ dateInput.addEventListener("change", () => {
   controls.enablePan = true;
   controls.enableZoom = true;
 
-  // Sun in center
+  // Sun
   const sunMesh = new THREE.Mesh(
     new THREE.SphereGeometry(5, 32, 32),
     new THREE.MeshBasicMaterial({ color: 0xffcc33 }),
   );
   scene.add(sunMesh);
 
-  // Planet orbits (no planets)
+  // Planet orbits (hardcoded major/minor axes)
   const AU = 30;
-  const planetDistances = [0.39, 0.72, 1, 1.52, 5.2, 9.58, 19.2, 30.05]; // Mercury to Neptune approx
-  planetDistances.forEach((dist) => {
+  const planetOrbits = [
+    { a: 0.39, b: 0.39 },
+    { a: 0.72, b: 0.72 },
+    { a: 1, b: 0.999 },
+    { a: 1.52, b: 1.52 },
+    { a: 5.2, b: 5.19 },
+    { a: 9.58, b: 9.55 },
+    { a: 19.2, b: 19.18 },
+    { a: 30.05, b: 29.8 },
+  ];
+  planetOrbits.forEach((p) => {
+    const pts = [];
+    const segments = 128;
+    for (let i = 0; i <= segments; i++) {
+      const theta = (i / segments) * 2 * Math.PI;
+      pts.push(
+        new THREE.Vector3(
+          p.a * AU * Math.cos(theta),
+          0,
+          p.b * AU * Math.sin(theta),
+        ),
+      );
+    }
     const orbit = new THREE.LineLoop(
-      new THREE.BufferGeometry().setFromPoints(
-        createEllipsePoints(dist * AU, 0),
-      ),
+      new THREE.BufferGeometry().setFromPoints(pts),
       new THREE.LineBasicMaterial({ color: 0x555555 }),
     );
-    orbit.rotation.x = Math.PI / 2;
     scene.add(orbit);
   });
 
   // Earth
-  const earthOrbitRadius = 1 * AU;
+  const earthOrbitRadius = AU;
   const earthMesh = new THREE.Mesh(
     new THREE.SphereGeometry(1.5, 16, 16),
     new THREE.MeshLambertMaterial({ color: 0x3366ff }),
@@ -115,23 +133,7 @@ dateInput.addEventListener("change", () => {
   scene.add(earthMesh);
   let earthAngle = 0;
 
-  // Helper to create orbit points (ellipse placeholder)
-  function createEllipsePoints(a, iDeg = 0, e = 0) {
-    const b = a * Math.sqrt(1 - e * e);
-    const points = [];
-    const segments = 128;
-    for (let t = 0; t <= segments; t++) {
-      const theta = (t / segments) * Math.PI * 2;
-      let x = a * Math.cos(theta) - a * e;
-      let z = b * Math.sin(theta);
-      const y = z * Math.sin((iDeg * Math.PI) / 180);
-      z = z * Math.cos((iDeg * Math.PI) / 180);
-      points.push(new THREE.Vector3(x, y, z));
-    }
-    return points;
-  }
-
-  // Asteroid support
+  // Asteroid support using getOrbit() function
   class AsteroidOrbit {
     constructor(scene) {
       this.scene = scene;
@@ -141,8 +143,8 @@ dateInput.addEventListener("change", () => {
       this._t = 0;
     }
     generateEllipse(data) {
-      const AUscale = 30;
-      return createEllipsePoints(data.a * AUscale, data.i, data.e);
+      const coords = getOrbit(data);
+      return coords.map((p) => new THREE.Vector3(p.x, p.y, p.z));
     }
     updateOrbit(data) {
       if (this.line) {
@@ -153,6 +155,7 @@ dateInput.addEventListener("change", () => {
         this.scene.remove(this.mesh);
       }
       const pts = this.generateEllipse(data);
+      if (pts.length === 0) return;
       this.line = new THREE.Line(
         new THREE.BufferGeometry().setFromPoints(pts),
         new THREE.LineBasicMaterial({ color: 0xff4444 }),
@@ -181,7 +184,7 @@ dateInput.addEventListener("change", () => {
   updateInfo("apophis");
   asteroidOrbit.updateOrbit(ASTEROIDS["apophis"]);
 
-  // Lighting
+  // Lights
   const ambient = new THREE.AmbientLight(0x666666);
   scene.add(ambient);
   const pointLight = new THREE.PointLight(0xffffff, 1.5, 0);
@@ -193,7 +196,7 @@ dateInput.addEventListener("change", () => {
     const now = performance.now();
     const dt = (now - last) / 1000;
     last = now;
-    earthAngle += dt * 0.5; // rotation speed
+    earthAngle += dt * 0.5;
     earthMesh.position.set(
       Math.cos(earthAngle) * earthOrbitRadius,
       0,
@@ -212,6 +215,8 @@ dateInput.addEventListener("change", () => {
     camera.updateProjectionMatrix();
   });
 })();
+
+/* MAP VIEW */
 
 (function initMap() {
   const map = L.map("map", { center: [20, 0], zoom: 2 });

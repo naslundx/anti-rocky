@@ -29,7 +29,6 @@ header {
     align-items: center;
     gap: 16px;
     margin-bottom: 14px;
-    margin-top: 24px;
 }
 header h1 {
     margin: 0;
@@ -47,13 +46,14 @@ header h1 {
     height: calc(100vh - 110px);
 }
 .panel {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
-    border: 1px solid rgba(255, 255, 255, 0.03);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.09), transparent);
+    border: 1px solid rgba(255, 255, 255, 0.23);
     border-radius: 12px;
     padding: 12px;
     display: flex;
     flex-direction: column;
     min-width: 0;
+    margin-bottom: 14px;
 }
 .panel .panel-header {
     display: flex;
