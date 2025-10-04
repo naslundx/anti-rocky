@@ -3,6 +3,7 @@ import os
 from flask import Flask, request, redirect
 from flask_cors import CORS
 
+from clients.firestore import FirestoreMiddleware
 from clients.sbdb import SBDBClient
 from clients.neo import NeoClient
 from orbits import compute_orbit
@@ -14,6 +15,7 @@ neo_api_key = os.environ.get("neo_api_key", None)
 
 neo_client = NeoClient(neo_api_key)
 sbdb_client = SBDBClient()
+fs = FirestoreMiddleware()
 
 # Setup app and Cors
 
@@ -41,11 +43,12 @@ def list_objects():
 # Detailed object
 @app.route("/objects/<neo_id>/", methods=["GET"])
 def get_object(neo_id: str):
-    neo_data = sbdb_client.get(neo_id)
-    if neo_data is None:
+    data = fs.get_or_create(neo_id, sbdb_client.get)
+
+    if data is None:
         return "", 404
     else:
-        return neo_data, 200
+        return data, 200
 
 
 @app.route("/objects/<neo_id>/orbit/", methods=["GET"])

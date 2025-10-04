@@ -31,13 +31,13 @@ variable "gcp_services" {
     "iam.googleapis.com",
     "cloudresourcemanager.googleapis.com",
     "run.googleapis.com",
-    "artifactregistry.googleapis.com"
+    "artifactregistry.googleapis.com",
+    "firestore.googleapis.com",
     #    "secretmanager.googleapis.com",
     #    "cloudfunctions.googleapis.com",
     #    "pubsub.googleapis.com",
     #    "eventarc.googleapis.com",
     #    "gmail.googleapis.com",
-    #    "firestore.googleapis.com"
   ]
 }
 
