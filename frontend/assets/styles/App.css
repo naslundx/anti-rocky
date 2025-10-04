@@ -1,0 +1,85 @@
+.app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    font-family: sans-serif;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    background: #e5e5e5;
+    padding: 8px;
+    gap: 8px;
+}
+
+.header button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    background: white;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.header button:hover {
+    background: #ddd;
+}
+
+.header button.active {
+    background: #007acc;
+    color: white;
+}
+
+.header .toggle {
+    background: #444;
+    color: white;
+}
+
+.content {
+    flex: 1;
+    display: flex;
+    position: relative;
+    overflow: hidden;
+    gap: 4px;
+    padding: 8px;
+    height: 100vh;
+}
+
+.panel {
+    height: 100%;
+    flex: 1;
+    min-width: 0;
+    overflow: auto;
+}
+
+.view {
+    height: 100%;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.view-a {
+    background: #cde4ff;
+}
+
+.view-b {
+    background: #d4f7d0;
+}
+
+.divider {
+    width: 6px;
+    background: #aaa;
+    cursor: col-resize;
+    border-radius: 3px;
+    transition: background 0.2s;
+}
+
+.divider:hover {
+    background: #888;
+}
+
+.divider:active {
+    background: #666;
+}
