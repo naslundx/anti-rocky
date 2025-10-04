@@ -43,15 +43,29 @@ async function updateInfo(key) {
   data = ASTEROIDS[key];
   let size = `${Math.floor(data.estimated_diameter.meters.estimated_diameter_min)}–${Math.floor(data.estimated_diameter.meters.estimated_diameter_max)}`;
 
+  const today = new Date();
+  const diameter = `${Math.floor(ASTEROIDS[key].estimated_diameter.meters.estimated_diameter_min)}–${Math.floor(ASTEROIDS[key].estimated_diameter.meters.estimated_diameter_max)}`
+
+  let closestDistance = 0
+  let closestDistanceDate = ''
+  data.close_approach_data.some((closeApproach) => {
+    if (Date.parse(closeApproach.close_approach_date) >= today && closeApproach.orbiting_body === "Earth") {
+        closestDistance = Math.floor(closeApproach.miss_distance.kilometers).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+        closestDistanceDate = closeApproach.close_approach_date
+        return true
+    }
+  });
+
+
   infoBox.innerHTML = `
     <div class="info-row"><div class="info-label">SPK ID</div><div><a href="${data.links.self}">${data.object.spkid}</a></div></div>
     <div class="info-row"><div class="info-label">Name</div><div>${data.name}</div></div>
     <div class="info-row"><div class="info-label">Full name</div><div>${data.object.fullname || "-"}</div></div>
-    <div class="info-row"><div class="info-label">Diameter</div><div>${size} meters</div></div>
+    <div class="info-row"><div class="info-label">Diameter</div><div>${diameter} meters</div></div>
     <div class="info-row"><div class="info-label">Orbit length</div><div>${Math.floor(data.orbital_data.orbital_period)} days</div></div>
     <div class="info-row"><div class="info-label">Notes</div><div>?</div></div>
-    <div class="info-row"><div class="info-label">Closest distance</div><div>?</div></div>
-    <div class="info-row"><div class="info-label">Current distance</div><div>?</div></div>
+    <div class="info-row"><div class="info-label">Closest distance</div><div>${closestDistance} km</div></div>
+    <div class="info-row"><div class="info-label">Date</div><div>${closestDistanceDate}</div></div>
   `;
 
   window.asteroidOrbit?.updateOrbit(data);
