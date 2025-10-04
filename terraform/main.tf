@@ -30,7 +30,8 @@ variable "gcp_services" {
   default = [
     "iam.googleapis.com",
     "cloudresourcemanager.googleapis.com",
-    "run.googleapis.com"
+    "run.googleapis.com",
+    "artifactregistry.googleapis.com"
     #    "secretmanager.googleapis.com",
     #    "cloudfunctions.googleapis.com",
     #    "pubsub.googleapis.com",

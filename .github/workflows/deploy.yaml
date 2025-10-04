@@ -59,6 +59,11 @@ jobs:
       - name: Install gcloud CLI
         uses: google-github-actions/setup-gcloud@v3
 
+      - name: Build and push API
+        run: |
+          docker build -t europe-west1-docker.pkg.dev/anti-rocky/anti-rocky/api:latest api
+          docker push europe-west1-docker.pkg.dev/anti-rocky/anti-rocky/api:latest
+
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v3
 
