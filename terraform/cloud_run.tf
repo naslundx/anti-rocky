@@ -17,11 +17,3 @@ resource "google_cloud_run_v2_service_iam_binding" "api_public_access" {
   role     = "roles/run.invoker"
   members  = ["allUsers"]
 }
-
-resource "google_cloud_run_domain_mapping" "default" {
-  name     = "protecting.earth"
-  location = google_cloud_run_v2_service.api.location
-  spec {
-    route_name = google_cloud_run_v2_service.api.name
-  }
-}
