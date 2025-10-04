@@ -59,17 +59,6 @@ jobs:
       - name: Install gcloud CLI
         uses: google-github-actions/setup-gcloud@v3
 
-      - name: Authenticate Docker Cloud
-        run: gcloud auth configure-docker europe-west1-docker.pkg.dev
-
-      - name: Build and push API
-        run: |
-          docker build -t europe-west1-docker.pkg.dev/anti-rocky/anti-rocky/api:latest api
-          docker push europe-west1-docker.pkg.dev/anti-rocky/anti-rocky/api:latest
-          gcloud run services update api \
-            --image europe-west1-docker.pkg.dev/anti-rocky/anti-rocky/api:latest \
-            --region europe-west1
-
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v3
 
@@ -80,5 +69,15 @@ jobs:
       - name: Terraform Apply
         working-directory: ${{ env.TERRAFORM_DIR }}
         run: terraform apply -input=false -auto-approve -lock-timeout=5m
-        env:
-          TF_VAR_neo_api_key: ${{ secrets.NEO_API_KEY }}
+
+      - name: Authenticate Docker Cloud
+        run: gcloud auth configure-docker europe-west1-docker.pkg.dev
+
+      - name: Build and push API
+        run: |
+          docker build -t europe-west1-docker.pkg.dev/anti-rocky/anti-rocky/api:latest api
+          docker push europe-west1-docker.pkg.dev/anti-rocky/anti-rocky/api:latest
+          gcloud run services update api \
+            --image europe-west1-docker.pkg.dev/anti-rocky/anti-rocky/api:latest \
+            --region europe-west1
+            --set-env-vars neo_api_key=${{ secrets.NEO_API_KEY }},env=production

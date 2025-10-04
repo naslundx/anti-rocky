@@ -11,10 +11,6 @@ resource "google_cloud_run_v2_service" "api" {
         name  = "env"
         value = "production"
       }
-      env {
-        name = "NEO_API_KEY"
-        value = var.neo_api_key
-      }
     }
   }
 }
