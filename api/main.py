@@ -46,6 +46,4 @@ def get_object(neo_id: str):
 
 if __name__ == "__main__":
     PORT = int(os.getenv("PORT")) if os.getenv("PORT") else 8080
-    # This is used when running locally. Gunicorn is used to run the
-    # application on Cloud Run. See entrypoint in Dockerfile.
     app.run(host="local.defending.earth", port=PORT, debug=True)
