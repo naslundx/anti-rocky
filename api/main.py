@@ -36,9 +36,9 @@ def list_objects():
 def get_object(neo_id: str):
     neo_data = sbdb_client.get(neo_id)
     if neo_data is None:
-        return neo_data, 200
-    else:
         return "", 404
+    else:
+        return neo_data, 200
 
 
 if __name__ == "__main__":
