@@ -51,8 +51,6 @@
                     <h2>Find asteroid</h2>
                 </div>
                 <div class="controls">
-                    <label for="obs-date">Date</label>
-                    <input id="obs-date" type="date" />
                     <label for="obj-select">Object</label>
                     <select id="obj-select"></select>
                 </div>
@@ -90,11 +88,11 @@
                                 <div class="info-label">
                                     Estimated casualties
                                 </div>
-                                <div>?</div>
+                                <div id="impact-casualties">?</div>
                             </div>
                             <div class="info-row">
                                 <div class="info-label">Other consequences</div>
-                                <div>?</div>
+                                <div id="impact-other">?</div>
                             </div>
                         </div>
                     </div>
@@ -113,9 +111,7 @@
                                 font-size: 13px;
                                 color: var(--muted);
                             "
-                        >
-                            500 meters
-                        </div>
+                        ></div>
                     </div>
                     <div id="map"></div>
                     <footer class="note"></footer>

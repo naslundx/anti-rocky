@@ -65,7 +65,7 @@ def get_object_orbit(key: str):
         "raan": float(neo_data["orbit"]["elements"][4]["value"]) * u.deg,
         "argp": float(neo_data["orbit"]["elements"][5]["value"]) * u.deg,
         "M0": float(neo_data["orbit"]["elements"][6]["value"]) * u.deg,
-        "epoch0": "2020-01-01T00:00:00",
+        "epoch0": "2020-01-01T00:00:00"
     }
     orbit = compute_orbit(data)
 
@@ -79,10 +79,14 @@ def get_earth_orbit():
 
 @app.route("/api/objects/<key>/impact/", methods=["GET"])
 def get_object_impact(key: str):
-    return ([
-        {"x": 12, "y": 75, "radius": 80000, "note": "DANGER DANGER", "color": "red"},
-        {"x": 14, "y": 100, "radius": 500000, "note": "lite mindre DANGER", "color": "blue"},
-    ], 200)
+    return ({
+        "casualties": 12345,
+        "other": "Take cover",
+        "circles": [
+            {"x": 12, "y": 75, "radius": 80000, "note": "DANGER DANGER", "color": "red"},
+            {"x": 14, "y": 100, "radius": 500000, "note": "lite mindre DANGER", "color": "blue"},
+        ]
+    }, 200)
 
 
 if __name__ == "__main__":

@@ -53,8 +53,8 @@ async function updateInfo(key) {
   const COLLISION = true;
 
   if (COLLISION) {
-    const mapData = await fetch(`/api/objects/${key}/impact`).then((response) =>
-      response.json(),
+    const impactData = await fetch(`/api/objects/${key}/impact`).then(
+      (response) => response.json(),
     );
 
     if (circleLayers) {
@@ -62,7 +62,11 @@ async function updateInfo(key) {
     }
     circleLayers = [];
 
-    mapData.forEach((data) => {
+    document.querySelector("#impact-casualties").innerText =
+      impactData.casualties;
+    document.querySelector("#impact-other").innerText = impactData.other;
+
+    impactData.circles?.forEach((data) => {
       let layer = L.circle([data.x, data.y], {
         radius: data.radius,
         color: data.color,
@@ -70,7 +74,7 @@ async function updateInfo(key) {
         fillOpacity: 0.3,
       })
         .addTo(map)
-        .bindPopup(mapData.note)
+        .bindPopup(data.note)
         .openPopup();
 
       circleLayers.push(layer);
@@ -79,10 +83,6 @@ async function updateInfo(key) {
 }
 
 select.addEventListener("change", (e) => updateInfo(e.target.value));
-dateInput.addEventListener("change", () => {
-  const d = dateInput.value;
-  console.log("Date chosen: ", d);
-});
 
 (function initThree() {
   const scene = new THREE.Scene();
@@ -166,7 +166,6 @@ dateInput.addEventListener("change", () => {
         .then((json) =>
           json.map((p) => new THREE.Vector3(p[0] * AU, p[1] * AU, p[2])),
         );
-      console.log(json);
       return json;
     }
     async updateOrbit(data) {
@@ -179,7 +178,6 @@ dateInput.addEventListener("change", () => {
       }
       const pts = await this.generateEllipse(data);
       if (pts.length === 0) return;
-      console.log(pts);
       this.line = new THREE.Line(
         new THREE.BufferGeometry().setFromPoints(pts),
         new THREE.LineBasicMaterial({ color: 0xff4444 }),
