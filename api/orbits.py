@@ -87,10 +87,10 @@ def compute_orbit(data, start="2025-10-05T00:00:00", dt=1, steps=100):
             raan=data["raan"],
             argp=data["argp"],
             M0=data["M0"],
-            epoch0=data["epoch0"],
+            epoch0=Time(data["epoch0"], scale="tdb"),
             epoch=epoch,
         )
-        orbit.append(position)
+        orbit.append((float(position[0].value), float(position[1].value), float(position[2].value)))
 
     return orbit
 

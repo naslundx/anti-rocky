@@ -60,6 +60,7 @@ def get_object_orbit(neo_id: str):
         "raan": float(neo_data["orbit"]["elements"][4]["value"]) * u.deg,
         "argp": float(neo_data["orbit"]["elements"][5]["value"]) * u.deg,
         "M0": float(neo_data["orbit"]["elements"][6]["value"]) * u.deg,
+        "epoch0": "2020-01-01T00:00:00",
     }
     orbit = compute_orbit(data)
 

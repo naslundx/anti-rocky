@@ -59,11 +59,11 @@ async function updateInfo(key) {
 
     if (circleLayers) {
       circleLayers.forEach((layer) => map.removeLayer(layer));
-      circleLayers = [];
     }
+    circleLayers = [];
 
     mapData.forEach((data) => {
-      layer = L.circle([data.x, data.y], {
+      let layer = L.circle([data.x, data.y], {
         radius: data.radius,
         color: data.color,
         fillColor: data.color,
