@@ -47,6 +47,16 @@ def get_object(neo_id: str):
         return neo_data, 200
 
 
+@app.route("/objects/<neo_id>/orbit/", methods=["GET"])
+def get_object():
+    return "", 200
+
+
+@app.route("/objects/<neo_id>/impact/", methods=["GET"])
+def get_object():
+    return "", 200
+
+
 if __name__ == "__main__":
     PORT = int(os.getenv("PORT")) if os.getenv("PORT") else 8080
     app.run(host="local.defending.earth", port=PORT, debug=True)
