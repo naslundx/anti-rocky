@@ -31,7 +31,7 @@ async function updateInfo(key) {
 
   if (data.size_m === undefined) {
     let response = await fetch(
-      `https://api.defending.earth/objects/${key}/`,
+      `https://api.defending.earth/objects/${key}?x=1/`,
     ).then((response) => response.json());
     ASTEROIDS[key] = {
       ...ASTEROIDS[key],
