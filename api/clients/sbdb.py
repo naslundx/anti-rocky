@@ -8,8 +8,8 @@ class SBDBClient:
     def __init__(self):
         pass
 
-    def get(self, neo_id: str):
-        url = f"{self.BASE_URL}?sstr={neo_id}"
+    def get(self, key: str):
+        url = f"{self.BASE_URL}?sstr={key}"
         response = requests.get(url).json()
         if "message" in response and response["message"] == "specified object was not found":
             return None

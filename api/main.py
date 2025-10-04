@@ -4,8 +4,7 @@ from flask import Flask, render_template
 from flask_cors import CORS
 
 from clients.firestore import FirestoreMiddleware
-from clients.sbdb import SBDBClient
-from clients.neo import NeoClient
+from clients.asteroid_collector import AsteroidCollector
 from orbits import compute_earth_orbit, compute_orbit
 import astropy.units as u
 
@@ -14,8 +13,7 @@ import astropy.units as u
 env = os.environ.get("env", "development").lower()
 neo_api_key = os.environ.get("neo_api_key", None)
 
-neo_client = NeoClient(neo_api_key)
-sbdb_client = SBDBClient()
+asteroid_collector = AsteroidCollector(neo_api_key)
 fs = FirestoreMiddleware()
 
 # Setup app and Cors
@@ -30,28 +28,35 @@ def index():
     return render_template("index.html")
 
 
+@app.route("/api/", methods=["GET"])
+def get_api():
+    return "Hello, Space!"
+
+
 # List objects
 @app.route("/api/objects/", methods=["GET"])
 def list_objects():
-    return neo_client.list(), 200
+    return asteroid_collector.list(), 200
 
 
 # Detailed object
-@app.route("/api/objects/<neo_id>/", methods=["GET"])
-def get_object(neo_id: str):
-    data = fs.get_or_create(neo_id, sbdb_client.get)
+@app.route("/api/objects/<key>/", methods=["GET"])
+def get_object(key: str):
+
+    data = fs.get_or_create(key, asteroid_collector.get)
 
     if data is None:
         return "", 404
     else:
-        return data, 200
+        return asteroid_collector.get_merge(data), 200
 
 
-@app.route("/api/objects/<neo_id>/orbit/", methods=["GET"])
-def get_object_orbit(neo_id: str):
-    neo_data = sbdb_client.get(neo_id)
-    if neo_data is None:
+@app.route("/api/objects/<key>/orbit/", methods=["GET"])
+def get_object_orbit(key: str):
+    data = fs.get_or_create(key, asteroid_collector.get)
+    if data is None:
         return "", 404
+    neo_data = asteroid_collector.get_merge(data)
 
     data = {
         "e": float(neo_data["orbit"]["elements"][0]["value"]),
@@ -67,18 +72,13 @@ def get_object_orbit(neo_id: str):
     return orbit, 200
 
 
-@app.route("/api/", methods=["GET"])
-def get_api():
-    return "Hello, Space!"
-
-
 @app.route("/api/earth/orbit/", methods=["GET"])
 def get_earth_orbit():
     return compute_earth_orbit()
 
 
-@app.route("/api/objects/<neo_id>/impact/", methods=["GET"])
-def get_object_impact(neo_id: str):
+@app.route("/api/objects/<key>/impact/", methods=["GET"])
+def get_object_impact(key: str):
     return ([
         {"x": 12, "y": 75, "radius": 80000, "note": "DANGER DANGER", "color": "red"},
         {"x": 14, "y": 100, "radius": 500000, "note": "lite mindre DANGER", "color": "blue"},
