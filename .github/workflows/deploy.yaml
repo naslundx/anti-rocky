@@ -25,7 +25,7 @@ jobs:
         run: uv sync
 
       - name: Run Ruff Linting
-        run: uvx ruff check functions --output-format=github
+        run: uvx ruff check --output-format=github
 
   deploy:
     name: 🚀 Deploy
