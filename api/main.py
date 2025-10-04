@@ -5,6 +5,7 @@ from flask_cors import CORS
 
 from clients.sbdb import SBDBClient
 from clients.neo import NeoClient
+from orbits import compute_orbit
 
 # Setup Clients and API Keys
 
@@ -49,7 +50,11 @@ def get_object(neo_id: str):
 
 @app.route("/objects/<neo_id>/orbit/", methods=["GET"])
 def get_object_orbit(neo_id: str):
-    return "", 200
+    neo_data = sbdb_client.get(neo_id)
+    if neo_data is None:
+        return "", 404
+
+    return compute_orbit(), 200
 
 
 @app.route("/objects/<neo_id>/impact/", methods=["GET"])
