@@ -41,10 +41,8 @@ async function updateInfo(key) {
   }
 
   data = ASTEROIDS[key];
-  let size = `${Math.floor(data.estimated_diameter.meters.estimated_diameter_min)}–${Math.floor(data.estimated_diameter.meters.estimated_diameter_max)}`;
-
+  let diameter = `${Math.floor(data.estimated_diameter.meters.estimated_diameter_min)}–${Math.floor(data.estimated_diameter.meters.estimated_diameter_max)}`;
   const today = new Date();
-  const diameter = `${Math.floor(ASTEROIDS[key].estimated_diameter.meters.estimated_diameter_min)}–${Math.floor(ASTEROIDS[key].estimated_diameter.meters.estimated_diameter_max)}`
 
   let closestDistance = 0
   let closestDistanceDate = ''
