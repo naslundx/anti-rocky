@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, request, redirect, logging
+from flask import Flask, request, redirect
 
 env = os.environ.get("env", "development").lower()
 
