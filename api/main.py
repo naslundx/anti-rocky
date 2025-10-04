@@ -32,7 +32,7 @@ def list_objects():
     return neo_client.list(), 200
 
 
-@app.route("/objects/<neo_id>", methods=["GET"])
+@app.route("/objects/<neo_id>/", methods=["GET"])
 def get_object(neo_id: str):
     neo_data = sbdb_client.get(neo_id)
     if neo_data is None:
