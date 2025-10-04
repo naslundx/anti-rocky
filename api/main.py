@@ -1,5 +1,3 @@
-import base64
-import json
 import os
 
 from flask import Flask, request
