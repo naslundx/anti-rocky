@@ -23,6 +23,9 @@ class NeoClient:
         computed_neo_objects = []
         for _, neo_objects in neo.items():
             for neo_object in neo_objects:
+                # Filter out all non-hazardous
+                if not neo_object.get("is_potentially_hazardous_asteroid", True):
+                    continue
                 computed_neo_objects.append({
                     "name": neo_object["name"],
                     "id": neo_object["id"],
