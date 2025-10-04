@@ -30,10 +30,10 @@ header {
     gap: 16px;
     margin-bottom: 14px;
 }
-header a {
+a {
     color: rgb(200, 200, 200);
 }
-header a:hover {
+a:hover {
     color: white;
 }
 header h1 {

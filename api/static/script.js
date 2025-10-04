@@ -28,7 +28,7 @@ fetch("/api/objects/")
   });
 
 async function updateInfo(key) {
-  const data = ASTEROIDS[key];
+  let data = ASTEROIDS[key];
 
   if (data.size_m === undefined) {
     let response = await fetch(`/api/objects/${key}/`).then((response) =>
@@ -40,12 +40,15 @@ async function updateInfo(key) {
     };
   }
 
-  let size = `${Math.floor(ASTEROIDS[key].estimated_diameter.meters.estimated_diameter_min)}–${Math.floor(ASTEROIDS[key].estimated_diameter.meters.estimated_diameter_max)}`
+  data = ASTEROIDS[key];
+  let size = `${Math.floor(data.estimated_diameter.meters.estimated_diameter_min)}–${Math.floor(data.estimated_diameter.meters.estimated_diameter_max)}`;
 
   infoBox.innerHTML = `
+    <div class="info-row"><div class="info-label">SPK ID</div><div><a href="${data.links.self}">${data.object.spkid}</a></div></div>
     <div class="info-row"><div class="info-label">Name</div><div>${data.name}</div></div>
-    <div class="info-row"><div class="info-label">Full name</div><div>${data.fullname || "-"}</div></div>
+    <div class="info-row"><div class="info-label">Full name</div><div>${data.object.fullname || "-"}</div></div>
     <div class="info-row"><div class="info-label">Diameter</div><div>${size} meters</div></div>
+    <div class="info-row"><div class="info-label">Orbit length</div><div>${Math.floor(data.orbital_data.orbital_period)} days</div></div>
     <div class="info-row"><div class="info-label">Notes</div><div>?</div></div>
     <div class="info-row"><div class="info-label">Closest distance</div><div>?</div></div>
     <div class="info-row"><div class="info-label">Current distance</div><div>?</div></div>
