@@ -9,8 +9,6 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-  "pytest"
-]
-lint = [
+  "pytest",
   "ruff"
 ]

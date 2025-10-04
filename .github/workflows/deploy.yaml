@@ -21,13 +21,15 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v6
 
+      - name: Install project dependencies
+        run: uv sync
+
       - name: Run Ruff Linting
         run: ruff check functions --output-format=github
 
   deploy:
     name: 🚀 Deploy
     runs-on: ubuntu-latest
-    needs: lint
     if: github.ref == 'refs/heads/main'
 
     env:
