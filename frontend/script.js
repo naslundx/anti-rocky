@@ -31,7 +31,7 @@ async function updateInfo(key) {
 
   if (data.size_m === undefined) {
     let response = await fetch(
-      `https://api.defending.earth/objects/${key}?x=1/`,
+      `https://api.defending.earth/objects/${key}/`,
     ).then((response) => response.json());
     ASTEROIDS[key] = {
       ...ASTEROIDS[key],
@@ -41,9 +41,9 @@ async function updateInfo(key) {
 
   infoBox.innerHTML = `
     <div class="info-row"><div class="info-label">Name</div><div>${data.name}</div></div>
-    <div class="info-row"><div class="info-label">Approx. size</div><div>${data.size_m} m</div></div>
-    <div class="info-row"><div class="info-label">Orbital hints</div><div>a=${data.a} AU · e=${data.e} · i=${data.i}°</div></div>
-    <div class="info-row"><div class="info-label">Notes</div><div>${data.notes}</div></div>
+    <div class="info-row"><div class="info-label">Full name</div><div>${data.fullname}</div></div>
+    <div class="info-row"><div class="info-label">Approx. size</div><div>?</div></div>
+    <div class="info-row"><div class="info-label">Notes</div><div>?</div></div>
   `;
 
   window.asteroidOrbit?.updateOrbit(data);
