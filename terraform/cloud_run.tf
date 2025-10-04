@@ -8,10 +8,6 @@ resource "google_cloud_run_v2_service" "api" {
     containers {
       image = "europe-west1-docker.pkg.dev/${var.gcp_project}/${var.gcp_project}/api:latest"
       resources {
-        limits = {
-          "cpu"    = "1"
-          "memory" = "256Mi"
-        }
         startup_cpu_boost = true
       }
       env {

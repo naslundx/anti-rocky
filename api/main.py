@@ -60,6 +60,7 @@ def get_object_orbit(neo_id: str):
 def get_earth_orbit():
     return compute_earth_orbit()
 
+
 @app.route("/api/objects/<neo_id>/impact/", methods=["GET"])
 def get_object_impact(neo_id: str):
     return ({"x": 12, "y": 75, "radius": 50000, "note": "DANGER DANGER"}, 200)
