@@ -1,18 +1,23 @@
 import os
 
-from flask import Flask
+from flask import Flask, request, redirect
 
+env = os.environ.get("env", "development").lower()
 
 app = Flask(__name__)
 
 
 @app.route("/", methods=["GET"])
 def index():
-    return ("Hello", 200)
+    if env == "production":
+        if 'www.defending.earth' not in request.headers['Host']:
+            return redirect("http://www.defending.earth", code=302)
+
+    return "Hello Space", 200
 
 
 if __name__ == "__main__":
     PORT = int(os.getenv("PORT")) if os.getenv("PORT") else 8080
     # This is used when running locally. Gunicorn is used to run the
     # application on Cloud Run. See entrypoint in Dockerfile.
-    app.run(host="127.0.0.1", port=PORT, debug=True)
+    app.run(host="local.defending.earth", port=PORT, debug=True)
