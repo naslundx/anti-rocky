@@ -3,10 +3,12 @@ import { OrbitControls } from "https://unpkg.com/three@0.158.0/examples/jsm/cont
 
 const infoBox = document.getElementById("info-box");
 const select = document.getElementById("obj-select");
-const dateInput = document.getElementById("obs-date");
 const container = document.getElementById("three-container");
+const btnBack = document.getElementById("btnBack");
+const btnForward = document.getElementById("btnForward");
 
 const AU = 30;
+let animationIndex = 0;
 let ASTEROIDS = {};
 let circleLayers = null;
 
@@ -49,6 +51,7 @@ async function updateInfo(key) {
   `;
 
   window.asteroidOrbit?.updateOrbit(data);
+  window.earthOrbit?.updateOrbit(data);
 
   const COLLISION = true;
 
@@ -131,8 +134,8 @@ select.addEventListener("change", (e) => updateInfo(e.target.value));
       pts.push(
         new THREE.Vector3(
           p.a * AU * Math.cos(theta),
-          0,
           p.b * AU * Math.sin(theta),
+          0,
         ),
       );
     }
@@ -143,17 +146,9 @@ select.addEventListener("change", (e) => updateInfo(e.target.value));
     scene.add(orbit);
   });
 
-  // Earth
-  const earthOrbitRadius = AU;
-  const earthMesh = new THREE.Mesh(
-    new THREE.SphereGeometry(1.5, 16, 16),
-    new THREE.MeshLambertMaterial({ color: 0x3366ff }),
-  );
-  scene.add(earthMesh);
-  let earthAngle = 0;
-
-  class AsteroidOrbit {
-    constructor(scene) {
+  class Orbit {
+    constructor(scene, isPlanet = false) {
+      this.isPlanet = isPlanet;
       this.scene = scene;
       this.line = null;
       this.mesh = null;
@@ -161,10 +156,13 @@ select.addEventListener("change", (e) => updateInfo(e.target.value));
       this._t = 0;
     }
     async generateEllipse(data) {
-      const json = await fetch(`/api/objects/${data.id}/orbit/`)
+      const url = this.isPlanet
+        ? "/api/earth/orbit/"
+        : `/api/objects/${data.id}/orbit/`;
+      const json = await fetch(url)
         .then((response) => response.json())
         .then((json) =>
-          json.map((p) => new THREE.Vector3(p[0] * AU, p[1] * AU, p[2])),
+          json.map((p) => new THREE.Vector3(p[0] * AU, p[1] * AU, p[2] * AU)),
         );
       return json;
     }
@@ -176,16 +174,21 @@ select.addEventListener("change", (e) => updateInfo(e.target.value));
       if (this.mesh) {
         this.scene.remove(this.mesh);
       }
+
       const pts = await this.generateEllipse(data);
       if (pts.length === 0) return;
       this.line = new THREE.Line(
         new THREE.BufferGeometry().setFromPoints(pts),
-        new THREE.LineBasicMaterial({ color: 0xff4444 }),
+        new THREE.LineBasicMaterial({
+          color: this.isPlanet ? 0x3366ff : 0xff4444,
+        }),
       );
       this.scene.add(this.line);
       this.mesh = new THREE.Mesh(
         new THREE.SphereGeometry(0.8, 12, 12),
-        new THREE.MeshLambertMaterial({ color: 0xff5555 }),
+        new THREE.MeshLambertMaterial({
+          color: this.isPlanet ? 0x3366ff : 0xff5555,
+        }),
       );
       this.mesh.position.copy(pts[0]);
       this.scene.add(this.mesh);
@@ -193,14 +196,17 @@ select.addEventListener("change", (e) => updateInfo(e.target.value));
       this._t = 0;
     }
     animate(step) {
+      console.log(step);
       if (!this._pts) return;
       this._t = (this._t + step) % this._pts.length;
       this.mesh.position.copy(this._pts[Math.floor(this._t)]);
     }
   }
 
-  const asteroidOrbit = new AsteroidOrbit(scene);
+  const asteroidOrbit = new Orbit(scene);
   window.asteroidOrbit = asteroidOrbit;
+  const earthOrbit = new Orbit(scene, true);
+  window.earthOrbit = earthOrbit;
 
   // Lights
   const ambient = new THREE.AmbientLight(0x666666, 6.5);
@@ -209,18 +215,7 @@ select.addEventListener("change", (e) => updateInfo(e.target.value));
   scene.add(pointLight);
 
   // Animation loop
-  let last = performance.now();
   function animate() {
-    const now = performance.now();
-    const dt = (now - last) / 1000;
-    last = now;
-    earthAngle += dt * 0.5;
-    earthMesh.position.set(
-      Math.cos(earthAngle) * earthOrbitRadius,
-      0,
-      Math.sin(earthAngle) * earthOrbitRadius,
-    );
-    asteroidOrbit.animate(0.8);
     controls.update();
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
@@ -233,6 +228,16 @@ select.addEventListener("change", (e) => updateInfo(e.target.value));
     camera.updateProjectionMatrix();
   });
 })();
+
+btnBack.addEventListener("click", () => {
+  window.asteroidOrbit.animate(-1.0);
+  window.earthOrbit.animate(-1.0);
+});
+
+btnForward.addEventListener("click", () => {
+  window.asteroidOrbit.animate(1.0);
+  window.earthOrbit.animate(1.0);
+});
 
 var map;
 (function initMap() {

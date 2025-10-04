@@ -95,7 +95,7 @@ def compute_orbit(data, start="2025-10-05T00:00:00", dt=1, steps=100):
     return orbit
 
 
-def compute_earth_orbit(start="2025-10-05T00:00:00", dt=1, steps=100):
+def compute_earth_orbit(start="2025-10-05T00:00:00", dt=1, steps=366):
     data = {
         "a": 1.00000261 * u.AU,
         "e": 0.01671123,
