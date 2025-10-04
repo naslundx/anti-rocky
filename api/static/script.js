@@ -8,7 +8,7 @@ const container = document.getElementById("three-container");
 
 const AU = 30;
 let ASTEROIDS = {};
-let circleLayer = null;
+let circleLayers = null;
 
 fetch("/api/objects/")
   .then((result) => result.json())
@@ -30,9 +30,9 @@ async function updateInfo(key) {
   const data = ASTEROIDS[key];
 
   if (data.size_m === undefined) {
-    let response = await fetch(
-      `/api/objects/${key}/`,
-    ).then((response) => response.json());
+    let response = await fetch(`/api/objects/${key}/`).then((response) =>
+      response.json(),
+    );
     ASTEROIDS[key] = {
       ...ASTEROIDS[key],
       ...response,
@@ -53,23 +53,28 @@ async function updateInfo(key) {
   const COLLISION = true;
 
   if (COLLISION) {
-    const mapData = await fetch(
-      `/api/objects/${key}/impact`,
-    ).then((response) => response.json());
+    const mapData = await fetch(`/api/objects/${key}/impact`).then((response) =>
+      response.json(),
+    );
 
-    if (circleLayer) {
-      map.removeLayer(circleLayer);
+    if (circleLayers) {
+      circleLayers.forEach((layer) => map.removeLayer(layer));
+      circleLayers = [];
     }
 
-    circleLayer = L.circle([mapData.x, mapData.y], {
-      radius: mapData.radius,
-      color: "red",
-      fillColor: "#f03",
-      fillOpacity: 0.5,
-    })
-      .addTo(map)
-      .bindPopup(mapData.note)
-      .openPopup();
+    mapData.forEach((data) => {
+      layer = L.circle([data.x, data.y], {
+        radius: data.radius,
+        color: data.color,
+        fillColor: data.color,
+        fillOpacity: 0.3,
+      })
+        .addTo(map)
+        .bindPopup(mapData.note)
+        .openPopup();
+
+      circleLayers.push(layer);
+    });
   }
 }
 
@@ -156,9 +161,7 @@ dateInput.addEventListener("change", () => {
       this._t = 0;
     }
     async generateEllipse(data) {
-      const json = await fetch(
-        `/api/objects/${data.id}/orbit/`,
-      )
+      const json = await fetch(`/api/objects/${data.id}/orbit/`)
         .then((response) => response.json())
         .then((json) =>
           json.map((p) => new THREE.Vector3(p[0] * AU, p[1] * AU, p[2])),
