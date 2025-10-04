@@ -1,12 +1,13 @@
 import os
 
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_cors import CORS
 
 from clients.firestore import FirestoreMiddleware
 from clients.asteroid_collector import AsteroidCollector
 from orbits import compute_earth_orbit, compute_orbit
 import astropy.units as u
+from astropy.time import Time
 
 # Setup Clients and API Keys
 
@@ -42,13 +43,11 @@ def list_objects():
 # Detailed object
 @app.route("/api/objects/<key>/", methods=["GET"])
 def get_object(key: str):
-
     data = fs.get_or_create(key, asteroid_collector.get)
-
     if data is None:
         return "", 404
-    else:
-        return asteroid_collector.get_merge(data), 200
+
+    return asteroid_collector.get_merge(data), 200
 
 
 @app.route("/api/objects/<key>/orbit/", methods=["GET"])
@@ -58,6 +57,9 @@ def get_object_orbit(key: str):
         return "", 404
     neo_data = asteroid_collector.get_merge(data)
 
+    start_date = request.args.get('start_date', '2020-01-01')
+    steps = int(request.args.get('steps', '100'))
+
     data = {
         "e": float(neo_data["orbit"]["elements"][0]["value"]),
         "a": float(neo_data["orbit"]["elements"][1]["value"]) * u.AU,
@@ -65,16 +67,19 @@ def get_object_orbit(key: str):
         "raan": float(neo_data["orbit"]["elements"][4]["value"]) * u.deg,
         "argp": float(neo_data["orbit"]["elements"][5]["value"]) * u.deg,
         "M0": float(neo_data["orbit"]["elements"][6]["value"]) * u.deg,
-        "epoch0": "2020-01-01T00:00:00"
+        "epoch0": Time(float(neo_data["orbit"]["epoch"]), format='jd'),
     }
-    orbit = compute_orbit(data)
+    orbit = compute_orbit(data, start=f"{start_date}T00:00:00", steps=steps)
 
     return orbit, 200
 
 
 @app.route("/api/earth/orbit/", methods=["GET"])
 def get_earth_orbit():
-    return compute_earth_orbit()
+    start_date = request.args.get('start_date', '2020-01-01')
+    steps = int(request.args.get('steps', '366'))
+
+    return compute_earth_orbit(start=f"{start_date}T00:00:00", steps=steps), 200
 
 
 @app.route("/api/objects/<key>/impact/", methods=["GET"])

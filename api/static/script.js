@@ -10,6 +10,7 @@ const btnForward = document.getElementById("btnForward");
 const AU = 30;
 let ASTEROIDS = {};
 let circleLayers = null;
+let asteroidClosestDistanceDate = null;
 
 fetch("/api/objects/")
   .then((result) => result.json())
@@ -41,19 +42,24 @@ async function updateInfo(key) {
   }
 
   data = ASTEROIDS[key];
-  let diameter = `${Math.floor(data.estimated_diameter.meters.estimated_diameter_min)}–${Math.floor(data.estimated_diameter.meters.estimated_diameter_max)}`;
+  const diameter = `${Math.floor(data.estimated_diameter.meters.estimated_diameter_min)}–${Math.floor(data.estimated_diameter.meters.estimated_diameter_max)}`;
   const today = new Date();
 
-  let closestDistance = 0
-  let closestDistanceDate = ''
+  let closestDistance = 0;
+  let closestDistanceDate = "";
   data.close_approach_data.some((closeApproach) => {
-    if (Date.parse(closeApproach.close_approach_date) >= today && closeApproach.orbiting_body === "Earth") {
-        closestDistance = Math.floor(closeApproach.miss_distance.kilometers).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-        closestDistanceDate = closeApproach.close_approach_date
-        return true
+    if (
+      Date.parse(closeApproach.close_approach_date) >= today &&
+      closeApproach.orbiting_body === "Earth"
+    ) {
+      closestDistance = Math.floor(closeApproach.miss_distance.kilometers)
+        .toString()
+        .replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+      closestDistanceDate = closeApproach.close_approach_date;
+      return true;
     }
   });
-
+  asteroidClosestDistanceDate = closestDistanceDate;
 
   infoBox.innerHTML = `
     <div class="info-row"><div class="info-label">SPK ID</div><div><a href="${data.links.self}">${data.object.spkid}</a></div></div>
@@ -172,9 +178,21 @@ select.addEventListener("change", (e) => updateInfo(e.target.value));
       this._t = 0;
     }
     async generateEllipse(data) {
-      const url = this.isPlanet
+      let url = this.isPlanet
         ? "/api/earth/orbit/"
         : `/api/objects/${data.id}/orbit/`;
+
+      if (asteroidClosestDistanceDate) {
+        const closestDate = new Date(asteroidClosestDistanceDate);
+        const threeMonthsEarlier = new Date(
+          closestDate.setMonth(closestDate.getMonth() - 3),
+        );
+        url += "?start_date=" + threeMonthsEarlier.toISOString().split("T")[0];
+      }
+
+      const steps = Math.ceil(data.orbital_data.orbital_period);
+      url += "&steps=" + steps;
+
       const json = await fetch(url)
         .then((response) => response.json())
         .then((json) =>
