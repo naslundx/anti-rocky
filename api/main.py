@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, request, redirect, render_template
+from flask import Flask, render_template
 from flask_cors import CORS
 
 from clients.firestore import FirestoreMiddleware
