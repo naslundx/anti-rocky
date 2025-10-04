@@ -1,7 +1,5 @@
 from astropy import units as u
 from astropy.time import Time
-from poliastro.bodies import Sun
-from poliastro.twobody import Orbit
 
 
 def convertToHeliocentric(a, ecc, inc, raan, argp, M0):
