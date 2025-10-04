@@ -48,12 +48,12 @@ def get_object(neo_id: str):
 
 
 @app.route("/objects/<neo_id>/orbit/", methods=["GET"])
-def get_object_orbit():
+def get_object_orbit(neo_id: str):
     return "", 200
 
 
 @app.route("/objects/<neo_id>/impact/", methods=["GET"])
-def get_object_impact():
+def get_object_impact(neo_id: str):
     return "", 200
 
 
