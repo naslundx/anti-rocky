@@ -75,22 +75,36 @@ def propagateKeplerToHeliocentricXYZ(a, e, i, raan, argp, M0, epoch0, epoch):
     return np.array([x, y, z]) * u.AU
 
 
-def compute_orbit(dt=1, steps=100):
-    epoch0 = Time("2020-05-31T00:00:00", scale="tdb")  # todo
-    epochs = generate_epochs(Time("2025-10-02T00:00:00", scale="tdb"))
+def compute_orbit(data, start="2025-10-05T00:00:00", dt=1, steps=100):
+    epochs = generate_epochs(Time(start, scale="tdb"), dt=dt, n_steps=steps)
 
     orbit = []
     for epoch in epochs:
         position = propagateKeplerToHeliocentricXYZ(
-            a=1.0 * u.AU,
-            e=0.0167,
-            i=0.0 * u.deg,
-            raan=0.0 * u.deg,
-            argp=102.9373 * u.deg,
-            M0=0.0 * u.deg,
-            epoch0=epoch0,
+            a=data["a"],
+            e=data["e"],
+            i=data["i"],
+            raan=data["raan"],
+            argp=data["argp"],
+            M0=data["M0"],
+            epoch0=data["epoch0"],
             epoch=epoch,
         )
         orbit.append(position)
 
+    return orbit
+
+
+def compute_earth_orbit(start="2025-10-05T00:00:00", dt=1, steps=100):
+    data = {
+        "a": 1.00000261 * u.AU,
+        "e": 0.01671123,
+        "i": -0.00001531 * u.deg,
+        "raan": 0.0 * u.deg,
+        "argp": 102.93768193 * u.deg,
+        "M0": 357.52688973 * u.deg,
+        "epoch0": Time("2020-05-31T00:00:00", scale="tdb"),
+    }
+
+    orbit = compute_orbit(data, start, dt, steps)
     return orbit

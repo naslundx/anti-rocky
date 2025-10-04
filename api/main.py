@@ -6,7 +6,7 @@ from flask_cors import CORS
 from clients.firestore import FirestoreMiddleware
 from clients.sbdb import SBDBClient
 from clients.neo import NeoClient
-from orbits import compute_orbit
+from orbits import compute_earth_orbit, compute_orbit
 
 # Setup Clients and API Keys
 
@@ -57,12 +57,17 @@ def get_object_orbit(neo_id: str):
     if neo_data is None:
         return "", 404
 
+    return [], 200  # todo
     return compute_orbit(), 200
 
 
+@app.route("/earth/orbit/", methods=["GET"])
+def get_earth_orbit():
+    return compute_earth_orbit()
+
 @app.route("/objects/<neo_id>/impact/", methods=["GET"])
 def get_object_impact(neo_id: str):
-    return "", 200
+    return ({"x": 12, "y": 75, "radius": 50000, "note": "DANGER DANGER"}, 200)
 
 
 if __name__ == "__main__":
