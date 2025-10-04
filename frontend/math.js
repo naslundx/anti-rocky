@@ -21,30 +21,50 @@ function datetimeToJD(year, month, day, hour = 0, minute = 0, second = 0) {
   return JD;
 }
 
-function sbdbToHeliocentricXYZ(elements, tJD) {
-  // elements = {a, e, i, Ω, ω, M0, epoch} (all numbers)
-  // a in AU, i/Ω/ω/M0 in degrees, epoch in JD
-  // tJD = target Julian Date
-
+/**
+ * Convert SBDB orbital elements to heliocentric coordinates (AU)
+ *
+ * SBDB elements object should include:
+ *  - a  : semi-major axis (AU)
+ *  - e  : eccentricity
+ *  - i  : inclination (deg)
+ *  - node : longitude of ascending node (deg)
+ *  - peri : argument of perihelion (deg)
+ *  - M   : mean anomaly at epoch (deg) [optional if tp is given]
+ *  - epoch : epoch of M (JD) [required if M is given]
+ *  - tp  : time of perihelion passage (JD) [optional if M is given]
+ *
+ * tJD : target Julian Date
+ * Returns {X,Y,Z} in AU in heliocentric ecliptic frame
+ */
+function sbdbToHeliocentricXYZ(sbdb, tJD) {
   const deg2rad = Math.PI / 180;
   const k = 0.01720209895; // Gaussian gravitational constant (AU^(3/2)/day)
 
-  const a = elements.a;
-  const e = elements.e;
-  const i = elements.i * deg2rad;
-  const Ω = elements.Ω * deg2rad;
-  const ω = elements.ω * deg2rad;
-  const M0 = elements.M0 * deg2rad;
-  const t0 = elements.epoch;
+  const a = sbdb.a;
+  const e = sbdb.e;
+  const i = sbdb.i * deg2rad;
+  const Ω = sbdb.node * deg2rad;
+  const ω = sbdb.peri * deg2rad;
 
   // mean motion (rad/day)
   const n = k / Math.sqrt(a * a * a);
 
-  // propagate mean anomaly
-  let M = M0 + n * (tJD - t0);
-  M = ((M % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI); // wrap 0..2pi
+  // compute mean anomaly at tJD
+  let M;
+  if (sbdb.tp) {
+    // use time of perihelion
+    M = n * (tJD - sbdb.tp);
+  } else if (sbdb.M !== undefined && sbdb.epoch !== undefined) {
+    M = sbdb.M * deg2rad + n * (tJD - sbdb.epoch);
+  } else {
+    throw new Error("Need either tp or M+epoch to compute mean anomaly");
+  }
 
-  // solve Kepler's equation (elliptic)
+  // wrap M to 0..2pi
+  M = ((M % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+
+  // solve Kepler's equation for E (elliptic)
   function solveKepler(M, e, tol = 1e-12, maxIter = 100) {
     let E = e < 0.8 ? M : Math.PI;
     for (let iter = 0; iter < maxIter; iter++) {
@@ -75,7 +95,7 @@ function sbdbToHeliocentricXYZ(elements, tJD) {
   const y_pf = r * Math.sin(nu);
   const z_pf = 0;
 
-  // rotation to ecliptic heliocentric coordinates
+  // rotation to heliocentric ecliptic
   const cosO = Math.cos(Ω),
     sinO = Math.sin(Ω);
   const cosi = Math.cos(i),
@@ -95,22 +115,27 @@ function sbdbToHeliocentricXYZ(elements, tJD) {
 }
 
 // Example usage
-const elements = {
-  a: 3.16, // AU
-  e: 0.117,
-  i: 7.01, // degrees
-  Ω: 329, // degrees
-  ω: 308, // degrees
-  M0: 299, // degrees
-  epoch: 2459000.5, // JD
+const sbdb = {
+  a: 3.15887342, // AU
+  e: 0.11763735,
+  i: 7.0106288, // deg
+  node: 328.860282, // Ω in deg
+  peri: 308.599079, // ω in deg
+  M: 298.8497976, // deg, optional if tp is given
+  epoch: 2461000.5, // JD
+  // tp: 2459005.0 // optional alternative
 };
 
+// target JD
+const tJD = 2460600.5;
+
 function getOrbit(dt = 1, steps = 1) {
-  let jd = datetimeToJD(2025, 11, 4, 14, 0, 0);
+  let jd = tJD;
+  //let jd = datetimeToJD(2025, 11, 4, 14, 0, 0);
   let result = [];
 
   for (let step = 0; step < steps; step++) {
-    const pos = sbdbToHeliocentricXYZ(elements, jd);
+    const pos = sbdbToHeliocentricXYZ(sbdb, jd);
     result.push(pos);
     jd += dt;
   }

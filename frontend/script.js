@@ -1,59 +1,72 @@
 import * as THREE from "three";
 import { OrbitControls } from "https://unpkg.com/three@0.158.0/examples/jsm/controls/OrbitControls.js";
 
-/* SPACE VIEW */
-
-const ASTEROIDS = {
-  apophis: {
-    name: "99942 Apophis",
-    size_m: 370,
-    type: "PHA",
-    notes: "Near-Earth Aten-class. Famous close approaches.",
-    a: 0.922,
-    e: 0.191,
-    i: 3.33,
-  },
-  bennu: {
-    name: "101955 Bennu",
-    size_m: 492,
-    type: "NEA",
-    notes: "OSIRIS-REx target.",
-    a: 1.126,
-    e: 0.203,
-    i: 6.0,
-  },
-  itokawa: {
-    name: "25143 Itokawa",
-    size_m: 535,
-    type: "NEA",
-    notes: "Hayabusa target (rubble pile).",
-    a: 1.324,
-    e: 0.279,
-    i: 1.62,
-  },
-};
-
 const infoBox = document.getElementById("info-box");
 const select = document.getElementById("obj-select");
 const dateInput = document.getElementById("obs-date");
 
-function updateInfo(key) {
-  if (!key) {
-    infoBox.innerHTML =
-      '<div style="color:var(--muted)">Select a date and an object to see details here.</div>';
-    return;
+let ASTEROIDS = {};
+let circleLayer = null;
+
+fetch("/objects/")
+  .then((result) => result.json())
+  .then((json) => {
+    localStorage.setItem("objects", JSON.stringify(json));
+    select.innerHTML = "";
+    json.forEach((obj) => {
+      const option = document.createElement("option");
+      option.value = obj.id;
+      option.textContent = obj.name;
+      select.appendChild(option);
+      ASTEROIDS[obj.id] = { ...obj };
+    });
+
+    updateInfo(select.value);
+  });
+
+async function updateInfo(key) {
+  const data = ASTEROIDS[key];
+
+  if (data.size_m === undefined) {
+    let response = await fetch(`/objects/${key}/`).then((response) =>
+      response.json(),
+    );
+    ASTEROIDS[key] = {
+      ...ASTEROIDS[key],
+      ...response,
+    };
   }
 
-  const data = ASTEROIDS[key];
   infoBox.innerHTML = `
     <div class="info-row"><div class="info-label">Name</div><div>${data.name}</div></div>
     <div class="info-row"><div class="info-label">Approx. size</div><div>${data.size_m} m</div></div>
-    <div class="info-row"><div class="info-label">Type</div><div>${data.type}</div></div>
     <div class="info-row"><div class="info-label">Orbital hints</div><div>a=${data.a} AU · e=${data.e} · i=${data.i}°</div></div>
     <div class="info-row"><div class="info-label">Notes</div><div>${data.notes}</div></div>
   `;
 
   window.asteroidOrbit?.updateOrbit(data);
+
+  const COLLISION = true;
+
+  if (COLLISION) {
+    const mapData = await fetch(`/objects/${key}/impact`).then((response) =>
+      response.json(),
+    );
+
+    if (circleLayer) {
+      map.removeLayer(circleLayer);
+    }
+
+    circleLayer = L.circle([mapData.x, mapData.y], {
+      radius: mapData.radius,
+      color: "red",
+      fillColor: "#f03",
+      fillOpacity: 0.5,
+    })
+      .addTo(map)
+      .bindPopup(mapData.note)
+      .openPopup();
+  }
 }
 
 select.addEventListener("change", (e) => updateInfo(e.target.value));
@@ -133,7 +146,6 @@ dateInput.addEventListener("change", () => {
   scene.add(earthMesh);
   let earthAngle = 0;
 
-  // Asteroid support using getOrbit() function
   class AsteroidOrbit {
     constructor(scene) {
       this.scene = scene;
@@ -142,11 +154,16 @@ dateInput.addEventListener("change", () => {
       this._pts = null;
       this._t = 0;
     }
-    generateEllipse(data) {
-      const coords = getOrbit(data);
-      return coords.map((p) => new THREE.Vector3(p.x, p.y, p.z));
+    async generateEllipse(data) {
+      const json = await fetch(`/objects/${data.id}/orbit/`)
+        .then((response) => response.json())
+        .then((json) =>
+          json.map((p) => new THREE.Vector3(p[0] * AU, p[1] * AU, p[2])),
+        );
+      console.log(json);
+      return json;
     }
-    updateOrbit(data) {
+    async updateOrbit(data) {
       if (this.line) {
         this.scene.remove(this.line);
         this.line.geometry.dispose();
@@ -154,8 +171,9 @@ dateInput.addEventListener("change", () => {
       if (this.mesh) {
         this.scene.remove(this.mesh);
       }
-      const pts = this.generateEllipse(data);
+      const pts = await this.generateEllipse(data);
       if (pts.length === 0) return;
+      console.log(pts);
       this.line = new THREE.Line(
         new THREE.BufferGeometry().setFromPoints(pts),
         new THREE.LineBasicMaterial({ color: 0xff4444 }),
@@ -180,12 +198,8 @@ dateInput.addEventListener("change", () => {
   const asteroidOrbit = new AsteroidOrbit(scene);
   window.asteroidOrbit = asteroidOrbit;
 
-  select.value = "apophis";
-  updateInfo("apophis");
-  asteroidOrbit.updateOrbit(ASTEROIDS["apophis"]);
-
   // Lights
-  const ambient = new THREE.AmbientLight(0x666666);
+  const ambient = new THREE.AmbientLight(0x666666, 6.5);
   scene.add(ambient);
   const pointLight = new THREE.PointLight(0xffffff, 1.5, 0);
   scene.add(pointLight);
@@ -216,19 +230,11 @@ dateInput.addEventListener("change", () => {
   });
 })();
 
-/* MAP VIEW */
-
+var map;
 (function initMap() {
-  const map = L.map("map", { center: [20, 0], zoom: 2 });
+  map = L.map("map", { center: [20, 0], zoom: 2 });
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19,
     attribution: "© OpenStreetMap contributors",
   }).addTo(map);
-  const center = [55.6761, 12.5683];
-  const radiusMeters = 500000;
-  L.circle(center, { radius: radiusMeters }).addTo(map);
-  L.marker(center)
-    .addTo(map)
-    .bindPopup("Hardcoded center (Denmark)")
-    .openPopup();
 })();
