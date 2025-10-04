@@ -8,7 +8,6 @@ const btnBack = document.getElementById("btnBack");
 const btnForward = document.getElementById("btnForward");
 
 const AU = 30;
-let animationIndex = 0;
 let ASTEROIDS = {};
 let circleLayers = null;
 
