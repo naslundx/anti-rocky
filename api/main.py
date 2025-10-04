@@ -3,7 +3,7 @@ import os
 from flask import Flask, request, redirect
 from flask_cors import CORS
 
-from api.clients.sbdb import SBDBClient
+from clients.sbdb import SBDBClient
 from clients.neo import NeoClient
 
 env = os.environ.get("env", "development").lower()
