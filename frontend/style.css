@@ -1,0 +1,135 @@
+:root {
+    --bg: #0f1724;
+    --card: #0b1220;
+    --muted: #9aa4b2;
+    --accent: #ff9f1c;
+}
+html,
+body {
+    height: 100%;
+    margin: 0;
+    font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        Segoe UI,
+        Roboto,
+        "Helvetica Neue",
+        Arial;
+}
+body {
+    background: linear-gradient(180deg, #071024 0%, #081426 100%);
+    color: #e6eef6;
+    padding: 18px;
+    height: 100vh;
+    overflow: hidden;
+}
+header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 14px;
+    margin-top: 24px;
+}
+header h1 {
+    margin: 0;
+    font-size: 20px;
+    letter-spacing: 0.6px;
+}
+.subtitle {
+    color: var(--muted);
+    font-size: 13px;
+}
+.columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    height: calc(100vh - 110px);
+}
+.panel {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+.panel .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+.panel h2 {
+    margin: 0;
+    font-size: 16px;
+}
+.controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 8px;
+}
+.controls label {
+    font-size: 13px;
+    color: var(--muted);
+}
+input[type="date"],
+select {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 8px;
+    border-radius: 8px;
+    color: inherit;
+}
+.info-box {
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 8px;
+    padding: 10px;
+    min-height: 84px;
+    color: #dfeaf6;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+.info-row {
+    display: flex;
+    gap: 8px;
+    margin: 6px 0;
+}
+.info-label {
+    color: var(--muted);
+    min-width: 80px;
+}
+.viz {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+#three-container {
+    flex: 1;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #000;
+}
+#map {
+    height: 100%;
+    border-radius: 10px;
+}
+.map-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+footer.note {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 8px;
+}
+@media (max-width: 900px) {
+    .columns {
+        grid-template-columns: 1fr;
+        height: auto;
+    }
+}

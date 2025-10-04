@@ -1,16 +1,114 @@
 <!doctype html>
 <html lang="en">
     <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Anti-rocky</title>
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content="Anti-rocky" />
-        <meta property="og:site_name" content="..." />
-        <meta property="og:description" content="..." />
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>anti rocky — asteroids & impacts</title>
+        <link
+            rel="stylesheet"
+            href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+            crossorigin=""
+        />
+        <link rel="stylesheet" href="style.css" />
+        <script type="importmap">
+            {
+                "imports": {
+                    "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+                    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+                }
+            }
+        </script>
     </head>
     <body>
-        <div id="root"></div>
-        <script type="module" src="/main.jsx"></script>
+        <header>
+            <div>
+                <h1>anti rocky</h1>
+                <div class="subtitle">
+                    filter · visualize · discuss — asteroids & meteorite impacts
+                </div>
+            </div>
+        </header>
+
+        <div class="columns">
+            <section class="panel" id="tab-1">
+                <div class="panel-header">
+                    <h2>Find asteroid</h2>
+                    <div class="subtitle">Date & selection</div>
+                </div>
+                <div class="controls">
+                    <label for="obs-date">Date</label>
+                    <input id="obs-date" type="date" />
+                    <label for="obj-select">Object</label>
+                    <select id="obj-select">
+                        <option value="">— pick an asteroid —</option>
+                        <option value="apophis">99942 Apophis</option>
+                        <option value="bennu">101955 Bennu</option>
+                        <option value="itokawa">25143 Itokawa</option>
+                    </select>
+                </div>
+                <div class="info-box" id="info-box">
+                    <div style="color: var(--muted)">
+                        Select a date and an object to see details here.
+                    </div>
+                </div>
+                <div class="viz">
+                    <div style="display: flex; gap: 12px; align-items: center">
+                        <div class="subtitle">
+                            3D Solar view (placeholder orbit computation)
+                        </div>
+                        <div
+                            style="
+                                margin-left: auto;
+                                font-size: 12px;
+                                color: var(--muted);
+                            "
+                        >
+                            animated
+                        </div>
+                    </div>
+                    <div id="three-container"></div>
+                </div>
+                <footer class="note">
+                    Note: Orbit computation is simplified — real orbital
+                    dynamics will be added later.
+                </footer>
+            </section>
+
+            <section class="panel" id="tab-2">
+                <div class="panel-header">
+                    <h2>Impact</h2>
+                    <div class="subtitle">...</div>
+                </div>
+                <div class="map-container">
+                    <div
+                        style="
+                            display: flex;
+                            gap: 10px;
+                            align-items: center;
+                            margin-bottom: 8px;
+                        "
+                    >
+                        <div class="subtitle">Review impact</div>
+                        <div
+                            style="
+                                margin-left: auto;
+                                font-size: 13px;
+                                color: var(--muted);
+                            "
+                        >
+                            500 meters
+                        </div>
+                    </div>
+                    <div id="map"></div>
+                    <footer class="note">
+                        Daniel Hansson, Johan Niklasson, Marcus Näslund - for
+                        the NASA Space Apps Challenge 2025
+                    </footer>
+                </div>
+            </section>
+        </div>
+
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        <script type="module" src="script.js"></script>
     </body>
 </html>
