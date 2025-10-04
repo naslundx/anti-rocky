@@ -66,6 +66,9 @@ jobs:
         run: |
           docker build -t europe-west1-docker.pkg.dev/anti-rocky/anti-rocky/api:latest api
           docker push europe-west1-docker.pkg.dev/anti-rocky/anti-rocky/api:latest
+          gcloud run services update api \
+            --image europe-west1-docker.pkg.dev/anti-rocky/anti-rocky/api:latest \
+            --region europe-west1
 
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v3

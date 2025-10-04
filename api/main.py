@@ -10,9 +10,8 @@ app = Flask(__name__)
 @app.route("/", methods=["GET"])
 def index():
     if env == "production":
-        app.logger.info("Running production mode")
-        app.logger.info(f"Host: {request.headers['Host']}")
-        if 'www.defending.earth' not in request.headers['Host'].lower():
+        host = request.headers['Host'].lower()
+        if host.startswith('defending.earth'):
             return redirect("http://www.defending.earth", code=302)
 
     return "Hello Space", 200
