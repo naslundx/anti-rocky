@@ -8,7 +8,7 @@ const dateInput = document.getElementById("obs-date");
 let ASTEROIDS = {};
 let circleLayer = null;
 
-fetch("/objects/")
+fetch("http://api.defending.earth/objects/")
   .then((result) => result.json())
   .then((json) => {
     localStorage.setItem("objects", JSON.stringify(json));
@@ -28,9 +28,9 @@ async function updateInfo(key) {
   const data = ASTEROIDS[key];
 
   if (data.size_m === undefined) {
-    let response = await fetch(`/objects/${key}/`).then((response) =>
-      response.json(),
-    );
+    let response = await fetch(
+      `http://api.defending.earth/objects/${key}/`,
+    ).then((response) => response.json());
     ASTEROIDS[key] = {
       ...ASTEROIDS[key],
       ...response,
@@ -49,9 +49,9 @@ async function updateInfo(key) {
   const COLLISION = true;
 
   if (COLLISION) {
-    const mapData = await fetch(`/objects/${key}/impact`).then((response) =>
-      response.json(),
-    );
+    const mapData = await fetch(
+      `http://api.defending.earth/objects/${key}/impact`,
+    ).then((response) => response.json());
 
     if (circleLayer) {
       map.removeLayer(circleLayer);
@@ -155,7 +155,9 @@ dateInput.addEventListener("change", () => {
       this._t = 0;
     }
     async generateEllipse(data) {
-      const json = await fetch(`/objects/${data.id}/orbit/`)
+      const json = await fetch(
+        `http://api.defending.earth/objects/${data.id}/orbit/`,
+      )
         .then((response) => response.json())
         .then((json) =>
           json.map((p) => new THREE.Vector3(p[0] * AU, p[1] * AU, p[2])),
