@@ -7,6 +7,7 @@ from clients.firestore import FirestoreMiddleware
 from clients.sbdb import SBDBClient
 from clients.neo import NeoClient
 from orbits import compute_earth_orbit, compute_orbit
+import astropy.units as u
 
 # Setup Clients and API Keys
 
@@ -52,8 +53,17 @@ def get_object_orbit(neo_id: str):
     if neo_data is None:
         return "", 404
 
-    return [], 200  # todo
-    return compute_orbit(), 200
+    data = {
+        "e": float(neo_data["orbit"]["elements"][0]["value"]),
+        "a": float(neo_data["orbit"]["elements"][1]["value"]) * u.AU,
+        "i": float(neo_data["orbit"]["elements"][3]["value"]) * u.deg,
+        "raan": float(neo_data["orbit"]["elements"][4]["value"]) * u.deg,
+        "argp": float(neo_data["orbit"]["elements"][5]["value"]) * u.deg,
+        "M0": float(neo_data["orbit"]["elements"][6]["value"]) * u.deg,
+    }
+    orbit = compute_orbit(data)
+
+    return orbit, 200
 
 
 @app.route("/api/", methods=["GET"])
