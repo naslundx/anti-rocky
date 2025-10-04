@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, request, redirect
+from flask import Flask, request, redirect, logging
 
 env = os.environ.get("env", "development").lower()
 
@@ -10,7 +10,9 @@ app = Flask(__name__)
 @app.route("/", methods=["GET"])
 def index():
     if env == "production":
-        if 'www.defending.earth' not in request.headers['Host']:
+        app.logger.info("Running production mode")
+        app.logger.info(f"Host: {request.headers['Host']}")
+        if 'www.defending.earth' not in request.headers['Host'].lower():
             return redirect("http://www.defending.earth", code=302)
 
     return "Hello Space", 200
