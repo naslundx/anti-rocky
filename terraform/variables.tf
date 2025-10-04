@@ -16,9 +16,3 @@ variable "gcp_project" {
   description = "GCP Project ID"
   default     = "anti-rocky"
 }
-
-variable "neo_api_key" {
-  type = string
-  description = "API KEY for NEO Dataset"
-  sensitive = true
-}
