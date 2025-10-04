@@ -14,4 +14,4 @@ class SBDBClient:
         if "message" in response and response["message"] == "specified object was not found":
             return None
 
-        return response.json()
+        return response
