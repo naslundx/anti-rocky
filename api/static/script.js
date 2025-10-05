@@ -89,7 +89,7 @@ async function updateInfo(key) {
 
   data = ASTEROIDS[key];
   const diameter = `${Math.floor(data.estimated_diameter.meters.estimated_diameter_min)}–${Math.floor(data.estimated_diameter.meters.estimated_diameter_max)}`;
-  const today = new Date()
+  const today = new Date();
 
   let closestDistance = data.closest_miss_km;
   let closestDistanceDate = data.closest_approach_date;
@@ -106,8 +106,9 @@ async function updateInfo(key) {
     }
   });
   */
-  const moonDistance = 384_400
-  const closestDistanceMoonMultiplier = Math.round(closestDistance * 100 / moonDistance) / 100
+  const moonDistance = 384_400;
+  const closestDistanceMoonMultiplier =
+    Math.round((closestDistance * 100) / moonDistance) / 100;
   asteroidClosestDistanceDate = closestDistanceDate;
 
   infoBox.innerHTML = `
@@ -249,7 +250,6 @@ select.addEventListener("change", (e) => updateInfo(e.target.value));
       this._t = 0;
     }
     animate(step) {
-      console.log(step);
       if (!this._pts) return;
       this._t = (this._t + step) % this._pts.length;
       this.mesh.position.copy(this._pts[Math.floor(this._t)]);
@@ -302,7 +302,6 @@ var map;
 
   map.on("click", function (e) {
     const { lat, lng } = e.latlng;
-    console.log("click", lat, lng);
     updateImpact(currentKey, lat, lng);
   });
 })();
