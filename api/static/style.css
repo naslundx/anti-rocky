@@ -175,7 +175,7 @@ footer.note {
     background-color: navy;
 }
 
-.button-box button:hover {
+.button-box button:hover:not(:disabled) {
     background-color: navy;
     color: white;
 }
