@@ -6,7 +6,6 @@
 }
 html,
 body {
-    height: 100%;
     margin: 0;
     font-family:
         Inter,
@@ -154,8 +153,6 @@ footer.note {
     .columns {
         grid-template-columns: 1fr;
         height: auto;
-    }
-    body {
     }
 }
 
