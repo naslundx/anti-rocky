@@ -118,7 +118,7 @@ async function updateInfo(key) {
     <div class="info-row"><div class="info-label">Diameter</div><div>${diameter} meters</div></div>
     <div class="info-row"><div class="info-label">Orbit length</div><div>${Math.floor(data.orbital_data.orbital_period)} days</div></div>
     <div class="info-row"><div class="info-label">Notes</div><div>?</div></div>
-    <div class="info-row"><div class="info-label">Closest distance</div><div>${Math.floor(closestDistance)} km (${closestDistanceMoonMultiplier} x 🌝)</div></div>
+    <div class="info-row"><div class="info-label">Closest distance</div><div>${Math.floor(closestDistance)} km (${closestDistanceMoonMultiplier} x 🌙)</div></div>
     <div class="info-row"><div class="info-label">Date</div><div>${closestDistanceDate}</div></div>
     <div class="info-row"><div class="info-label">Relative velocity:</div><div>${Math.floor(relativeVelocity)} km/s</div></div>
   `;
