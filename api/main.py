@@ -85,14 +85,15 @@ def get_object_orbit(key: str):
 
     start_date = request.args.get('start_date', '2020-01-01')
     steps = int(request.args.get('steps', '100'))
+    orbit = neo_data["orbit"]["elements"]
 
     data = {
-        "e": float(neo_data["orbit"]["elements"][0]["value"]),
-        "a": float(neo_data["orbit"]["elements"][1]["value"]) * u.AU,
-        "i": float(neo_data["orbit"]["elements"][3]["value"]) * u.deg,
-        "raan": float(neo_data["orbit"]["elements"][4]["value"]) * u.deg,
-        "argp": float(neo_data["orbit"]["elements"][5]["value"]) * u.deg,
-        "M0": float(neo_data["orbit"]["elements"][6]["value"]) * u.deg,
+        "e": float(orbit[0]["value"]),
+        "a": float(orbit[1]["value"]) * u.AU,
+        "i": float(orbit[3]["value"]) * u.deg,
+        "raan": float(orbit[4]["value"]) * u.deg,
+        "argp": float(orbit[5]["value"]) * u.deg,
+        "M0": float(orbit[6]["value"]) * u.deg,
         "epoch0": Time(float(neo_data["orbit"]["epoch"]), format='jd'),
     }
     orbit = compute_orbit(data, start=f"{start_date}T00:00:00", steps=steps)
