@@ -54,6 +54,8 @@ async function updateImpact(key, lat, lon) {
 
   document.querySelector("#impact-casualties").innerText =
     impactData.casualties;
+  document.querySelector("#impact-energy").innerText =
+    `${Math.floor(impactData.energy_megaton)} MT`;
   document.querySelector("#impact-other").innerText = impactData.other;
 
   impactData.circles?.forEach((data) => {

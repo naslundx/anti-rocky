@@ -4,7 +4,10 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <title>anti rocky</title>
-        <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" />
+        <link
+            rel="icon"
+            href="{{ url_for('static', filename='favicon.svg') }}"
+        />
         <link
             rel="stylesheet"
             href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -97,6 +100,10 @@
                                     Estimated casualties
                                 </div>
                                 <div id="impact-casualties">?</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-label">Impact energy</div>
+                                <div id="impact-energy">?</div>
                             </div>
                             <div class="info-row">
                                 <div class="info-label">Other consequences</div>

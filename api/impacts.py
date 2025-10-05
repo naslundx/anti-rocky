@@ -91,7 +91,7 @@ def calculate_impact(data, lat ,lon):
 
     return {
         "casualties": population,
-        "other": f"Energy in megaton: {energy_megaton}",
+        "other": "You should probably take cover",
         "circles": circles,
         "energy_megaton": energy_megaton,
     }
