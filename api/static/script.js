@@ -43,9 +43,9 @@ async function updateList() {
     sortedAsteroidList = rawAsteroidList.sort((a, b) =>
       a.name.localeCompare(b.name),
     );
-  } else if (sortCriteria === "Diameter") {
+  } else if (sortCriteria === "Max diameter") {
     sortedAsteroidList = rawAsteroidList.sort(
-      (a, b) => a.max_diameter_km - b.max_diameter_km,
+      (a, b) => b.max_diameter_km - a.max_diameter_km,
     );
   } else if (sortCriteria === "Approach date") {
     sortedAsteroidList = rawAsteroidList.sort((a, b) =>
