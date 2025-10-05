@@ -197,3 +197,6 @@ div#tab-3 {
 img.logo {
     height: 60px;
 }
+#mission-box > p {
+    margin-top: 0;
+}

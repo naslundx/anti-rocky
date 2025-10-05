@@ -12,6 +12,19 @@ def is_on_land(lat, lon):
     return LAND_DATA.contains(point).any()
 
 
+def get_feasibility(diameter):
+    if diameter < 10:
+        return {"booster": 0, "laser": 0, "kinetic_impact": 0, "tungsten": 2, "tungsten_nuke": 1 }
+    if diameter < 50:
+        return {"booster": 3, "laser": 3, "kinetic_impact": 5, "tungsten": 3, "tungsten_nuke": 2 }
+    if diameter < 300:
+        return {"booster": 5, "laser": 5, "kinetic_impact": 5, "tungsten": 5, "tungsten_nuke": 3 }
+    if diameter < 1000:
+        return {"booster": 5, "laser": 1, "kinetic_impact": 3, "tungsten": 3, "tungsten_nuke": 3 }
+
+    return {"booster": 0, "laser": 0, "kinetic_impact": 0, "tungsten": 0, "tungsten_nuke": 4 }
+
+
 def simulate_impact( diameter, density, velocity):
     radius = diameter / 2
     volume = (4/3) * 3.1415 * radius**3

@@ -5,7 +5,7 @@ from flask import Flask, render_template, request
 from flask.json.provider import DefaultJSONProvider
 from flask_cors import CORS
 
-from impacts import calculate_impact
+from impacts import calculate_impact, get_feasibility
 from clients.firestore import FirestoreMiddleware
 from clients.asteroid_collector import AsteroidCollector
 from clients.mission_design import MissionDesignClient
@@ -63,7 +63,12 @@ def get_object(key: str):
     if data is None:
         return "", 404
 
-    return asteroid_collector.get_merge(data), 200
+    diameter = float(data["neo"]["estimated_diameter"]["meters"]["estimated_diameter_max"])
+    feasibility = get_feasibility(diameter)
+    data["feasibility"] = {"feasibility": feasibility}
+    data = asteroid_collector.get_merge(data)
+
+    return data, 200
 
 
 # Detailed object
