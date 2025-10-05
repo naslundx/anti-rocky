@@ -206,7 +206,6 @@ sort.addEventListener("change", (e) => updateList());
   const planetOrbits = [
     { a: 0.39, b: 0.39 },
     { a: 0.72, b: 0.72 },
-    { a: 1, b: 0.999 },
     { a: 1.52, b: 1.52 },
     { a: 5.2, b: 5.19 },
     { a: 9.58, b: 9.55 },
