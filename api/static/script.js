@@ -162,9 +162,31 @@ async function updateInfo(key) {
     <div class="info-row"><div class="info-label">Date</div><div>${closestDistanceDate}</div></div>
     <div class="info-row"><div class="info-label">Relative velocity:</div><div>${Math.floor(relativeVelocity)} km/s</div></div>
   `;
-  missionBox.innerHTML = `<span style="color: var(--muted);">Loading possible mitigations...</span>`;
-  console.log(data);
-  feasibilityDescription.innerText = data.feasibility;
+  missionBox.innerHTML = `<span style="color: var(--muted);">Calculating best rendezvous launch dates...</span>`;
+
+  let feasibilityOptions = [];
+  if (data.feasibility.booster) {
+    feasibilityOptions.push(`Booster (${data.feasibility.booster}/5)`);
+  }
+  if (data.feasibility.laser) {
+    feasibilityOptions.push(`Laser (${data.feasibility.laser}/5)`);
+  }
+  if (data.feasibility.kinetic_impact) {
+    feasibilityOptions.push(
+      `Kinetic impact (${data.feasibility.kinetic_impact}/5)`,
+    );
+  }
+  if (data.feasibility.tungsten) {
+    feasibilityOptions.push(`Tungsten (${data.feasibility.tungsten}/5)`);
+  }
+  if (data.feasibility.booster) {
+    feasibilityOptions.push(
+      `Tungsten + nuke (${data.feasibility.tungsten_nuke}/5)`,
+    );
+  }
+
+  feasibilityDescription.innerText =
+    "Feasible mitigation strategies: " + feasibilityOptions.join(", ");
 
   await Promise.all([
     window.asteroidOrbit?.updateOrbit(data),
