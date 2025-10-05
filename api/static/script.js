@@ -78,7 +78,7 @@ async function updateInfo(key) {
   const COLLISION = true;
 
   if (COLLISION) {
-    const impactData = await fetch(`/api/objects/${key}/impact`).then(
+    const impactData = await fetch(`/api/objects/${key}/impact/`).then(
       (response) => response.json(),
     );
 
