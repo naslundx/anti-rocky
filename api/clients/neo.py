@@ -47,5 +47,4 @@ class NeoClient:
                 for key, value in local_data.items():
                     response[key] = value
 
-        print(response)
         return response

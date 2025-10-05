@@ -3,31 +3,63 @@ import { OrbitControls } from "https://unpkg.com/three@0.158.0/examples/jsm/cont
 
 const infoBox = document.getElementById("info-box");
 const select = document.getElementById("obj-select");
+const sort = document.getElementById("obj-sorting");
 const container = document.getElementById("three-container");
 const btnBack = document.getElementById("btnBack");
 const btnForward = document.getElementById("btnForward");
 
 const AU = 30;
+let rawAsteroidList = [];
 let ASTEROIDS = {};
 let circleLayers = [];
 let currentKey = null;
 let asteroidClosestDistanceDate = null;
 
-fetch("/api/objects/")
-  .then((result) => result.json())
-  .then((json) => {
-    localStorage.setItem("objects", JSON.stringify(json));
-    select.innerHTML = "";
-    json.forEach((obj) => {
-      const option = document.createElement("option");
-      option.value = obj.id;
-      option.textContent = obj.name;
-      select.appendChild(option);
-      ASTEROIDS[obj.id] = { ...obj };
-    });
+async function updateList() {
+  if (rawAsteroidList.length === 0) {
+    await fetch("/api/objects/")
+      .then((result) => result.json())
+      .then((json) => {
+        rawAsteroidList = json;
+      });
+  }
 
-    updateInfo(select.value);
+  const sortCriteria = sort.value;
+
+  let sortedAsteroidList;
+  if (sortCriteria === "Name") {
+    sortedAsteroidList = rawAsteroidList.sort((a, b) =>
+      a.name.localeCompare(b.name),
+    );
+  } else if (sortCriteria === "Diameter") {
+    sortedAsteroidList = rawAsteroidList.sort(
+      (a, b) => a.max_diameter_km - b.max_diameter_km,
+    );
+  } else if (sortCriteria === "Closest approach date") {
+    sortedAsteroidList = rawAsteroidList.sort((a, b) =>
+      a.closest_approach_date.localeCompare(b.closest_approach_date),
+    );
+  } else if (sortCriteria === "Closest approach distance") {
+    sortedAsteroidList = rawAsteroidList.sort(
+      (a, b) => a.closest_miss_km - b.closest_miss_km,
+    );
+  }
+
+  ASTEROIDS = [];
+  select.innerHTML = "";
+
+  sortedAsteroidList.forEach((obj) => {
+    ASTEROIDS[obj.id] = { ...obj };
+    const option = document.createElement("option");
+    option.value = obj.id;
+    option.textContent = obj.name;
+    select.appendChild(option);
   });
+
+  updateInfo(Object.keys(ASTEROIDS)[0]);
+}
+
+updateList();
 
 async function updateImpact(key, lat, lon) {
   let data = ASTEROIDS[key];
@@ -130,6 +162,7 @@ async function updateInfo(key) {
 }
 
 select.addEventListener("change", (e) => updateInfo(e.target.value));
+sort.addEventListener("change", (e) => updateList());
 
 (function initThree() {
   const scene = new THREE.Scene();
