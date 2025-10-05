@@ -28,6 +28,7 @@ class MissionDesignClient:
 
         data = response.json()
         parsed_missions = [MissionDesignClient.parse_mission(mission) for mission in data["selectedMissions"]]
+        parsed_missions.sort(key=lambda m: m["departure_date"])
         return {
             "dv_lowthrust": data["dv_lowthrust"],
             "missions": [
