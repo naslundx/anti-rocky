@@ -190,3 +190,7 @@ footer.note {
 .legend h4 {
     margin: 0;
 }
+div#tab-3 {
+    min-height: 0;
+    height: auto;
+}
