@@ -70,7 +70,6 @@ def calculate_impact(data, lat ,lon):
     on_land = is_on_land(lat, lon)
 
     scale = 1 if on_land else 0.1
-    population = get_population_worldpop(lon, lat, diameter*3*scale)
 
     calculations = simulate_impact(diameter, density, velocity)
     energy_megaton = calculations["energy_megaton"]
@@ -78,6 +77,8 @@ def calculate_impact(data, lat ,lon):
     radius_heavy_km = calculations["radius_heavy_km"]
     radius_medium_km = calculations["radius_medium_km"]
     radius_light_km = calculations["radius_light_km"]
+
+    population = get_population_worldpop(lon, lat, radius_extreme_km * 1000)
 
     circles = []
 
