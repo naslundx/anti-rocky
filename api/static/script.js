@@ -133,18 +133,6 @@ async function updateInfo(key) {
   let closestDistance = data.closest_miss_km;
   let closestDistanceDate = data.closest_approach_date;
   let relativeVelocity = data.relative_velocity_km_s;
-  /*
-  data.close_approach_data.some((closeApproach) => {
-    if (
-      Date.parse(closeApproach.close_approach_date) >= today &&
-      closeApproach.orbiting_body === "Earth"
-    ) {
-      closestDistance = Math.floor(closeApproach.miss_distance.kilometers)
-      closestDistanceDate = closeApproach.close_approach_date;
-      return true;
-    }
-  });
-  */
   const moonDistance = 384_400;
 
   let closestDistanceMoonMultiplier = closestDistance / moonDistance;
