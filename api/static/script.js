@@ -66,7 +66,8 @@ async function updateList() {
     select.appendChild(option);
   });
 
-  updateInfo(Object.keys(ASTEROIDS)[0]);
+  select.value = sortedAsteroidList[0].id;
+  updateInfo(sortedAsteroidList[0].id);
 }
 
 updateList();
