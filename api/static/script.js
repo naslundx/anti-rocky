@@ -8,6 +8,7 @@ const container = document.getElementById("three-container");
 const btnBack = document.getElementById("btnBack");
 const btnForward = document.getElementById("btnForward");
 const btnPlayPause = document.getElementById("btnPlayPause");
+const simulationDate = document.getElementById("simulationDate");
 
 const AU = 30;
 let rawAsteroidList = [];
@@ -17,6 +18,12 @@ let currentKey = null;
 let asteroidClosestDistanceDate = null;
 let simulationRunning = true;
 let simulationReady = false;
+
+function addDaysToDate(dateStr, days) {
+  const date = new Date(dateStr);
+  date.setDate(date.getDate() + days);
+  return date.toISOString().split("T")[0];
+}
 
 async function updateList() {
   if (rawAsteroidList.length === 0) {
@@ -234,6 +241,7 @@ sort.addEventListener("change", (e) => updateList());
       this.mesh = null;
       this._pts = null;
       this._t = 0;
+      this._firstDate = "2000-01-01";
     }
     async generateEllipse(data) {
       let url = this.isPlanet
@@ -245,7 +253,9 @@ sort.addEventListener("change", (e) => updateList());
         const threeMonthsEarlier = new Date(
           closestDate.setMonth(closestDate.getMonth() - 3),
         );
-        url += "?start_date=" + threeMonthsEarlier.toISOString().split("T")[0];
+        const earlyDateAsStr = threeMonthsEarlier.toISOString().split("T")[0];
+        this._firstDate = earlyDateAsStr;
+        url += "?start_date=" + earlyDateAsStr;
       }
 
       const steps = Math.ceil(data.orbital_data.orbital_period);
@@ -291,6 +301,7 @@ sort.addEventListener("change", (e) => updateList());
       if (!this._pts) return;
       this._t = (this._t + step) % this._pts.length;
       this.mesh.position.copy(this._pts[Math.floor(this._t)]);
+      simulationDate.innerText = addDaysToDate(this._firstDate, -90 + this._t);
     }
   }
 

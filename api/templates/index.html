@@ -77,19 +77,6 @@
                         Select an object to see details here.
                     </div>
                 </div>
-                <div class="viz">
-                    <div style="display: flex; gap: 12px; align-items: center">
-                        <div
-                            style="
-                                margin-left: auto;
-                                font-size: 12px;
-                                color: var(--muted);
-                            "
-                        ></div>
-                    </div>
-                    <div id="three-container"></div>
-                </div>
-
                 <div class="button-box" id="button-box">
                     <button id="btnBack">
                         <i class="fa fa-step-backward"></i>
@@ -101,9 +88,12 @@
                         <i class="fa fa-step-forward"></i>
                     </button>
                 </div>
+                <div class="viz">
+                    <div id="three-container"></div>
+                </div>
+
                 <footer class="note">
-                    <p>Showing simulation for YYYY-MM-DD HH:MM:SS</p>
-                    <p>Note: Uses simplified 2-body Keplerian orbits</p>
+                    <p>Orbit for <span id="simulationDate">YYYY-MM-DD</span></p>
                 </footer>
             </section>
 
