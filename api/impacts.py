@@ -67,22 +67,29 @@ def calculate_impact(data, lat ,lon):
     velocity = 17  # TODO
     density = 3000  # TODO
     on_land = is_on_land(lat, lon)
+
     scale = 1 if on_land else 0.1
 
-
     calculations = simulate_impact(diameter, density, velocity)
+    energy_megaton = calculations["energy_megaton"]
     radius_extreme_km = calculations["radius_extreme_km"]
     radius_heavy_km = calculations["radius_heavy_km"]
     radius_medium_km = calculations["radius_medium_km"]
     radius_light_km = calculations["radius_light_km"]
 
+    circles = []
+
+    if on_land:
+        circles.append(
+            {"lat": lat, "lon": lon, "radius": radius_extreme_km * 1000, "note": "BOOOOOM", "color": "red"})
+
+    circles.append({"lat": lat, "lon": lon, "radius": radius_heavy_km * 1000, "note": "DANGER", "color": "orange"})
+    circles.append({"lat": lat, "lon": lon, "radius": radius_medium_km * 1000, "note": "less danger", "color": "yellow"})
+    circles.append({"lat": lat, "lon": lon, "radius": radius_light_km * 1000, "note": "not too bad", "color": "green"})
+
     return {
         "casualties": 0,
-        "other": "Take cover",
-        "circles": [
-            {"lat": lat, "lon": lon, "radius": radius_extreme_km * 1000, "note": "BOOOOOM", "color": "red"},
-            {"lat": lat, "lon": lon, "radius": radius_heavy_km * 1000, "note": "DANGER", "color": "orange"},
-            {"lat": lat, "lon": lon, "radius": radius_medium_km * 1000, "note": "less danger", "color": "yellow"},
-            {"lat": lat, "lon": lon, "radius": radius_light_km * 1000, "note": "not too bad", "color": "green"},
-        ]
+        "other": f"Energy in megaton: {energy_megaton}",
+        "circles": circles,
+        "energy_megaton": energy_megaton,
     }
