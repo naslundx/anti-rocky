@@ -3,6 +3,7 @@ import os
 from flask import Flask, render_template, request
 from flask_cors import CORS
 
+from impacts import calculate_impact
 from clients.firestore import FirestoreMiddleware
 from clients.asteroid_collector import AsteroidCollector
 from orbits import compute_earth_orbit, compute_orbit
@@ -92,13 +93,9 @@ def get_object_impact(key: str):
         return "", 404
     neo_data = asteroid_collector.get_merge(data)
 
-    return ({
-        "casualties": 12345,
-        "other": "Take cover",
-        "circles": [
-            {"lat": lat, "lon": lon, "radius": 80000, "note": "DANGER DANGER", "color": "red"},
-        ]
-    }, 200)
+    impact = calculate_impact(neo_data, lat, lon)
+
+    return (impact, 200)
 
 
 if __name__ == "__main__":
