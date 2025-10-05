@@ -159,3 +159,23 @@ footer.note {
     body {
     }
 }
+
+.button-box {
+}
+
+.button-box button {
+    font-size: x-large;
+    border: 1px solid black;
+    color: gray;
+    background-color: navy;
+}
+
+.button-box button:disabled {
+    color: navy;
+    background-color: navy;
+}
+
+.button-box button:hover {
+    background-color: navy;
+    color: white;
+}

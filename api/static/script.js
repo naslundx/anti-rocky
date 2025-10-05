@@ -7,6 +7,7 @@ const sort = document.getElementById("obj-sorting");
 const container = document.getElementById("three-container");
 const btnBack = document.getElementById("btnBack");
 const btnForward = document.getElementById("btnForward");
+const btnPlayPause = document.getElementById("btnPlayPause");
 
 const AU = 30;
 let rawAsteroidList = [];
@@ -14,6 +15,8 @@ let ASTEROIDS = {};
 let circleLayers = [];
 let currentKey = null;
 let asteroidClosestDistanceDate = null;
+let simulationRunning = true;
+let simulationReady = false;
 
 async function updateList() {
   if (rawAsteroidList.length === 0) {
@@ -106,6 +109,10 @@ async function updateImpact(key, lat, lon) {
 }
 
 async function updateInfo(key) {
+  simulationRunning = false;
+  simulationReady = false;
+  updateBtnPlayPauseUI();
+
   currentKey = key;
   let data = ASTEROIDS[key];
 
@@ -140,9 +147,11 @@ async function updateInfo(key) {
   */
   const moonDistance = 384_400;
 
-  let closestDistanceMoonMultiplier = closestDistance / moonDistance
-  let roundingFactor = closestDistanceMoonMultiplier < 10 ? 10 : 1
-  closestDistanceMoonMultiplier = Math.round((closestDistance * roundingFactor) / moonDistance) / roundingFactor;
+  let closestDistanceMoonMultiplier = closestDistance / moonDistance;
+  let roundingFactor = closestDistanceMoonMultiplier < 10 ? 10 : 1;
+  closestDistanceMoonMultiplier =
+    Math.round((closestDistance * roundingFactor) / moonDistance) /
+    roundingFactor;
   asteroidClosestDistanceDate = closestDistanceDate;
 
   infoBox.innerHTML = `
@@ -157,8 +166,14 @@ async function updateInfo(key) {
     <div class="info-row"><div class="info-label">Relative velocity:</div><div>${Math.floor(relativeVelocity)} km/s</div></div>
   `;
 
-  window.asteroidOrbit?.updateOrbit(data);
-  window.earthOrbit?.updateOrbit(data);
+  await Promise.all([
+    window.asteroidOrbit?.updateOrbit(data),
+    window.earthOrbit?.updateOrbit(data),
+  ]);
+
+  simulationRunning = true;
+  simulationReady = true;
+  updateBtnPlayPauseUI();
 }
 
 select.addEventListener("change", (e) => updateInfo(e.target.value));
@@ -317,14 +332,47 @@ sort.addEventListener("change", (e) => updateList());
   });
 })();
 
+function stepAnimation(direction) {
+  window.asteroidOrbit.animate(direction);
+  window.earthOrbit.animate(direction);
+}
+
+function autoStepAnimation() {
+  setTimeout(() => {
+    if (simulationRunning) {
+      stepAnimation(1.0);
+    }
+    autoStepAnimation();
+  }, 250);
+}
+
+autoStepAnimation();
+
 btnBack.addEventListener("click", () => {
-  window.asteroidOrbit.animate(-1.0);
-  window.earthOrbit.animate(-1.0);
+  stepAnimation(-1.0);
 });
 
 btnForward.addEventListener("click", () => {
-  window.asteroidOrbit.animate(1.0);
-  window.earthOrbit.animate(1.0);
+  stepAnimation(1.0);
+});
+
+function updateBtnPlayPauseUI() {
+  if (simulationRunning) {
+    document.querySelector("#btnPlayPause i").classList.add("fa-pause");
+    document.querySelector("#btnPlayPause i").classList.remove("fa-play");
+  } else {
+    document.querySelector("#btnPlayPause i").classList.remove("fa-pause");
+    document.querySelector("#btnPlayPause i").classList.add("fa-play");
+  }
+
+  btnPlayPause.disabled = !simulationReady;
+  btnBack.disabled = !simulationReady;
+  btnForward.disabled = !simulationReady;
+}
+
+btnPlayPause.addEventListener("click", () => {
+  simulationRunning = !simulationRunning;
+  updateBtnPlayPauseUI();
 });
 
 var map;
