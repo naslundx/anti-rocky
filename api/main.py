@@ -84,12 +84,19 @@ def get_earth_orbit():
 
 @app.route("/api/objects/<key>/impact/", methods=["GET"])
 def get_object_impact(key: str):
+    lat = float(request.args.get('lat', 0))
+    lon = float(request.args.get('lon', 0))
+
+    data = fs.get_or_create(key, asteroid_collector.get)
+    if data is None:
+        return "", 404
+    neo_data = asteroid_collector.get_merge(data)
+
     return ({
         "casualties": 12345,
         "other": "Take cover",
         "circles": [
-            {"x": 12, "y": 75, "radius": 80000, "note": "DANGER DANGER", "color": "red"},
-            {"x": 14, "y": 100, "radius": 500000, "note": "lite mindre DANGER", "color": "blue"},
+            {"lat": lat, "lon": lon, "radius": 80000, "note": "DANGER DANGER", "color": "red"},
         ]
     }, 200)
 

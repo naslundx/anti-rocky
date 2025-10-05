@@ -9,7 +9,8 @@ const btnForward = document.getElementById("btnForward");
 
 const AU = 30;
 let ASTEROIDS = {};
-let circleLayers = null;
+let circleLayers = [];
+let currentKey = null;
 let asteroidClosestDistanceDate = null;
 
 fetch("/api/objects/")
@@ -28,7 +29,50 @@ fetch("/api/objects/")
     updateInfo(select.value);
   });
 
+async function updateImpact(key, lat, lon) {
+  let data = ASTEROIDS[key];
+
+  let tempLayer = L.circle([lat, lon], {
+    radius: 10000,
+    color: "#FFF",
+    fillColor: "#FFF",
+    fillOpacity: 0.5,
+  })
+    .addTo(map)
+    .bindPopup("Calculating...")
+    .openPopup();
+  circleLayers.push(tempLayer);
+
+  const impactData = await fetch(
+    `/api/objects/${key}/impact/?lat=${lat}&lon=${lon}`,
+  ).then((response) => response.json());
+
+  if (circleLayers) {
+    circleLayers.forEach((layer) => map.removeLayer(layer));
+  }
+  circleLayers = [];
+
+  document.querySelector("#impact-casualties").innerText =
+    impactData.casualties;
+  document.querySelector("#impact-other").innerText = impactData.other;
+
+  impactData.circles?.forEach((data) => {
+    let layer = L.circle([data.lat, data.lon], {
+      radius: data.radius,
+      color: data.color,
+      fillColor: data.color,
+      fillOpacity: 0.3,
+    })
+      .addTo(map)
+      .bindPopup(data.note)
+      .openPopup();
+
+    circleLayers.push(layer);
+  });
+}
+
 async function updateInfo(key) {
+  currentKey = key;
   let data = ASTEROIDS[key];
 
   if (data.size_m === undefined) {
@@ -74,37 +118,6 @@ async function updateInfo(key) {
 
   window.asteroidOrbit?.updateOrbit(data);
   window.earthOrbit?.updateOrbit(data);
-
-  const COLLISION = true;
-
-  if (COLLISION) {
-    const impactData = await fetch(`/api/objects/${key}/impact/`).then(
-      (response) => response.json(),
-    );
-
-    if (circleLayers) {
-      circleLayers.forEach((layer) => map.removeLayer(layer));
-    }
-    circleLayers = [];
-
-    document.querySelector("#impact-casualties").innerText =
-      impactData.casualties;
-    document.querySelector("#impact-other").innerText = impactData.other;
-
-    impactData.circles?.forEach((data) => {
-      let layer = L.circle([data.x, data.y], {
-        radius: data.radius,
-        color: data.color,
-        fillColor: data.color,
-        fillOpacity: 0.3,
-      })
-        .addTo(map)
-        .bindPopup(data.note)
-        .openPopup();
-
-      circleLayers.push(layer);
-    });
-  }
 }
 
 select.addEventListener("change", (e) => updateInfo(e.target.value));
@@ -280,4 +293,10 @@ var map;
     maxZoom: 19,
     attribution: "© OpenStreetMap contributors",
   }).addTo(map);
+
+  map.on("click", function (e) {
+    const { lat, lng } = e.latlng;
+    console.log("click", lat, lng);
+    updateImpact(currentKey, lat, lng);
+  });
 })();
