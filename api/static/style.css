@@ -112,11 +112,15 @@ select {
     color: #dfeaf6;
     font-size: 14px;
     margin-bottom: 8px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
 }
 .info-row {
     display: flex;
     gap: 8px;
-    margin: 6px 0;
+    margin: 2px 0;
+    width: 50%;
 }
 .info-label {
     color: var(--muted);
