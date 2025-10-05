@@ -328,7 +328,7 @@ sort.addEventListener("change", (e) => updateList());
       );
       this.scene.add(this.line);
       this.mesh = new THREE.Mesh(
-        new THREE.SphereGeometry(0.8, 12, 12),
+        new THREE.SphereGeometry(1.5, 12, 12),
         new THREE.MeshLambertMaterial({
           color: this.isPlanet ? 0x3366ff : 0xff5555,
         }),
