@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { OrbitControls } from "https://unpkg.com/three@0.158.0/examples/jsm/controls/OrbitControls.js";
 
 const infoBox = document.getElementById("info-box");
+const missionBox = document.getElementById("mission-box");
 const select = document.getElementById("obj-select");
 const sort = document.getElementById("obj-sorting");
 const container = document.getElementById("three-container");
@@ -160,6 +161,7 @@ async function updateInfo(key) {
     <div class="info-row"><div class="info-label">Date</div><div>${closestDistanceDate}</div></div>
     <div class="info-row"><div class="info-label">Relative velocity:</div><div>${Math.floor(relativeVelocity)} km/s</div></div>
   `;
+  missionBox.innerHTML = `<span style="color: var(--muted);">Loading possible mitigations...</span>`
 
   await Promise.all([
     window.asteroidOrbit?.updateOrbit(data),
@@ -169,6 +171,21 @@ async function updateInfo(key) {
   simulationRunning = true;
   simulationReady = true;
   updateBtnPlayPauseUI();
+
+  await fetch(`/api/objects/${key}/missions/?end_date=${closestDistanceDate}`).then((response) => response.json())
+        .then((missionData) => {
+      let missionInnerHTML = ''
+      let missions = 0
+      missionData["missions"].forEach((mission) => {
+          missionInnerHTML += `<div class="info-row"><div class="info-label">Departure</div><div>${mission["departure_date"]}</a></div></div>`
+          missionInnerHTML += `<div class="info-row"><div class="info-label">Arrival</div><div>${mission["arrival_date"]} (${mission["time_of_flight"]} days)</a></div></div>`
+      })
+      missions = missionData["missions"].length
+      if (missions === 0) {
+          missionInnerHTML = `<span style="color: var(--muted);">No mitigations possible for this encounter</span>`
+      }
+      missionBox.innerHTML = missionInnerHTML
+  });
 }
 
 select.addEventListener("change", (e) => updateInfo(e.target.value));
