@@ -71,8 +71,8 @@
                     <select id="obj-sorting">
                         <option>Name</option>
                         <option>Diameter</option>
-                        <option>Closest approach date</option>
-                        <option>Closest approach distance</option>
+                        <option>Approach date</option>
+                        <option>Min approach distance</option>
                     </select>
                     <label for="obj-select">Object</label>
                     <select id="obj-select"></select>
@@ -98,7 +98,13 @@
                 </div>
 
                 <footer class="note">
-                    <p>Orbit for <span id="simulationDate">YYYY-MM-DD</span></p>
+                    <p>
+                        Orbit for <span id="simulationDate">YYYY-MM-DD</span>
+                        <i
+                            class="fa fa-info-circle"
+                            title="Note: Orbit calculations are simplified 2-body Keplerian orbits."
+                        ></i>
+                    </p>
                 </footer>
             </section>
 
@@ -109,7 +115,7 @@
                 </div>
                 <div class="info-box" id="mission-box">
                     <p>Mitigation strategies...</p>
-                    <div></div>
+                    <div class="rendezvous-box"></div>
                 </div>
                 <div class="map-container">
                     <div class="info-box" id="map-box">
@@ -188,6 +194,10 @@
                 <p>
                     Keplerian orbit calculations via
                     <a href="https://pypi.org/project/astropy/">Astropy</a>
+                </p>
+                <p>
+                    Map rendering made possible by
+                    <a href="https://leafletjs.com/">Leaflet</a>
                 </p>
             </div>
         </div>

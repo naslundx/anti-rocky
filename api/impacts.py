@@ -76,7 +76,7 @@ def simulate_impact( diameter, density, velocity):
     }
 
 
-def calculate_impact(data, lat ,lon):
+def calculate_impact(data, lat, lon):
     diameter = float(data["estimated_diameter"]["meters"]["estimated_diameter_max"])
     velocity = float(data["relative_velocity_km_s"])
     density = 3000  # TODO
@@ -95,13 +95,13 @@ def calculate_impact(data, lat ,lon):
 
     circles = []
 
-    circles.append({"lat": lat, "lon": lon, "radius": radius_light_km * 1000, "note": "not too bad", "color": "green"})
-    circles.append({"lat": lat, "lon": lon, "radius": radius_medium_km * 1000, "note": "less danger", "color": "yellow"})
-    circles.append({"lat": lat, "lon": lon, "radius": radius_heavy_km * 1000, "note": "DANGER", "color": "orange"})
+    circles.append({"lat": lat, "lon": lon, "radius": radius_light_km * 1000, "note": "Low impact", "color": "green"})
+    circles.append({"lat": lat, "lon": lon, "radius": radius_medium_km * 1000, "note": "Medium impact", "color": "yellow"})
+    circles.append({"lat": lat, "lon": lon, "radius": radius_heavy_km * 1000, "note": "Heavy impact", "color": "orange"})
 
     if on_land:
         circles.append(
-            {"lat": lat, "lon": lon, "radius": radius_extreme_km * 1000, "note": "BOOOOOM", "color": "red"})
+            {"lat": lat, "lon": lon, "radius": radius_extreme_km * 1000, "note": "Asteroid impact", "color": "red"})
 
     return {
         "casualties": population,

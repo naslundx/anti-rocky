@@ -47,11 +47,11 @@ async function updateList() {
     sortedAsteroidList = rawAsteroidList.sort(
       (a, b) => a.max_diameter_km - b.max_diameter_km,
     );
-  } else if (sortCriteria === "Closest approach date") {
+  } else if (sortCriteria === "Approach date") {
     sortedAsteroidList = rawAsteroidList.sort((a, b) =>
       a.closest_approach_date.localeCompare(b.closest_approach_date),
     );
-  } else if (sortCriteria === "Closest approach distance") {
+  } else if (sortCriteria === "Min approach distance") {
     sortedAsteroidList = rawAsteroidList.sort(
       (a, b) => a.closest_miss_km - b.closest_miss_km,
     );
@@ -154,13 +154,12 @@ async function updateInfo(key) {
 
   infoBox.innerHTML = `
     <div class="info-row"><div class="info-label">SPK ID</div><div><a href="${data.links.self}">${data.object.spkid}</a></div></div>
-    <div class="info-row"><div class="info-label">Name</div><div>${data.name}</div></div>
-    <div class="info-row"><div class="info-label">Full name</div><div>${data.object.fullname || "-"}</div></div>
+    <div class="info-row"><div class="info-label">Full name</div><div>${data.object.fullname || data.name || "-"}</div></div>
     <div class="info-row"><div class="info-label">Diameter</div><div>${diameter} meters</div></div>
     <div class="info-row"><div class="info-label">Orbit length</div><div>${Math.floor(data.orbital_data.orbital_period)} days</div></div>
-    <div class="info-row"><div class="info-label">Closest distance</div><div>${Math.floor(closestDistance)} km (${closestDistanceMoonMultiplier} x 🌙)</div></div>
+    <div class="info-row"><div class="info-label">Min distance</div><div>${Math.floor(closestDistance)} km (${closestDistanceMoonMultiplier} x 🌙)</div></div>
     <div class="info-row"><div class="info-label">Date</div><div>${closestDistanceDate}</div></div>
-    <div class="info-row"><div class="info-label">Relative velocity:</div><div>${Math.floor(relativeVelocity)} km/s</div></div>
+    <div class="info-row"><div class="info-label">Relative velocity:</div><div>${Math.floor(relativeVelocity)} km/s <i class="fa fa-info-circle" title="Computed at the closest encounter point with Earth."></i></div></div>
   `;
   missionBox.innerHTML = `<span style="color: var(--muted);">Calculating best rendezvous launch dates...</span>`;
 
@@ -227,7 +226,7 @@ sort.addEventListener("change", (e) => updateList());
     0.1,
     2000,
   );
-  camera.position.set(0, 50, 150);
+  camera.position.set(0, 50, 120);
 
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setPixelRatio(window.devicePixelRatio);
@@ -434,7 +433,12 @@ var map;
   legend.onAdd = function (map) {
     var div = L.DomUtil.create("div", "info legend"),
       grades = ["Red", "Orange", "Yellow", "Green"],
-      labels = ["Death", "Kinda death", "Not so bad", "Meh"];
+      labels = [
+        "Extreme chockwaves",
+        "Heavy impact",
+        "Medium impact",
+        "Low impact",
+      ];
 
     // Add semi-transparent background to the legend
     div.innerHTML += "<h4>Legend</h4>";

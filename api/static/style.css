@@ -122,7 +122,6 @@ select {
 }
 .info-label {
     color: var(--muted);
-    min-width: 80px;
 }
 .viz {
     flex: 1;
@@ -199,4 +198,11 @@ img.logo {
 }
 #mission-box > p {
     margin-top: 0;
+}
+i.fa.fa-info-circle:hover {
+    color: white;
+}
+
+.rendezvous-box {
+    width: 100%;
 }
