@@ -2,6 +2,7 @@ import logging
 import json
 import requests
 
+
 class NeoClient:
     BASE_URL = "https://api.nasa.gov/neo/rest/v1/"
 
