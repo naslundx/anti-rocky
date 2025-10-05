@@ -12,7 +12,7 @@ def generate_epochs(start_epoch, dt=1, n_steps=10):
     return [start_epoch + offset * u.day for offset in offsets]
 
 
-@lru_cache()
+@lru_cache(maxsize=10000)
 def propagateKeplerToHeliocentricXYZ(a, e, i, raan, argp, M0, epoch0, epoch):
     """
     Propagate a Keplerian orbit around the Sun using Astropy.
@@ -78,7 +78,6 @@ def propagateKeplerToHeliocentricXYZ(a, e, i, raan, argp, M0, epoch0, epoch):
     return np.array([x, y, z]) * u.AU
 
 
-@lru_cache()
 def compute_orbit(data, start, dt=1, steps=1000):
     epochs = generate_epochs(Time(start, scale="tdb"), dt=dt, n_steps=steps)
 
