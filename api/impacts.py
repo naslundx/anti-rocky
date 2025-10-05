@@ -78,7 +78,7 @@ def calculate_impact(data, lat ,lon):
     radius_medium_km = calculations["radius_medium_km"]
     radius_light_km = calculations["radius_light_km"]
 
-    population = get_population_worldpop(lon, lat, radius_extreme_km * 1000)
+    population = get_population_worldpop(lon, lat, radius_heavy_km * 1000)
 
     circles = []
 
