@@ -109,9 +109,8 @@ async function updateInfo(key) {
   const moonDistance = 384_400;
 
   let closestDistanceMoonMultiplier = closestDistance / moonDistance
-    let roundingFactor = closestDistanceMoonMultiplier < 0 ? 10 : 1
-  closestDistanceMoonMultiplier =
-    Math.round((closestDistance * roundingFactor) / moonDistance) / roundingFactor;
+  let roundingFactor = closestDistanceMoonMultiplier < 10 ? 10 : 1
+  closestDistanceMoonMultiplier = Math.round((closestDistance * roundingFactor) / moonDistance) / roundingFactor;
   asteroidClosestDistanceDate = closestDistanceDate;
 
   infoBox.innerHTML = `
