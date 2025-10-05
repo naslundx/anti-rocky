@@ -69,7 +69,7 @@ def get_object(key: str):
 # Detailed object
 @app.route("/api/objects/<key>/missions/", methods=["GET"])
 def get_missions(key: str):
-    start_date = request.args.get('start_date')
+    start_date = request.args.get('start_date', date.today().isoformat())
     end_date = request.args.get('end_date')
     data = mission_design.get_from_id(key, start_date, end_date)
 
