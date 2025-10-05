@@ -100,6 +100,7 @@ select {
 }
 .button-box button {
     border: 1px solid white;
+    padding: 3px 10px;
 }
 .info-box {
     background: rgba(0, 0, 0, 0.25);
@@ -156,19 +157,16 @@ footer.note {
     }
 }
 
-.button-box {
-}
-
 .button-box button {
     font-size: x-large;
     border: 1px solid black;
     color: gray;
-    background-color: navy;
+    background-color: #081426;
 }
 
 .button-box button:disabled {
-    color: navy;
-    background-color: navy;
+    color: #222;
+    background-color: black;
 }
 
 .button-box button:hover:not(:disabled) {
