@@ -383,7 +383,7 @@ function autoStepAnimation() {
       stepAnimation(1.0);
     }
     autoStepAnimation();
-  }, 250);
+  }, 150);
 }
 
 autoStepAnimation();
