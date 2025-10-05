@@ -1,11 +1,14 @@
 import os
+from datetime import date, datetime
 
 from flask import Flask, render_template, request
+from flask.json.provider import DefaultJSONProvider
 from flask_cors import CORS
 
 from impacts import calculate_impact
 from clients.firestore import FirestoreMiddleware
 from clients.asteroid_collector import AsteroidCollector
+from clients.mission_design import MissionDesignClient
 from orbits import compute_earth_orbit, compute_orbit
 import astropy.units as u
 from astropy.time import Time
@@ -16,11 +19,22 @@ env = os.environ.get("env", "development").lower()
 neo_api_key = os.environ.get("neo_api_key", None)
 
 asteroid_collector = AsteroidCollector(neo_api_key)
+mission_design = MissionDesignClient()
 fs = FirestoreMiddleware()
+
+
+class UpdatedJSONProvider(DefaultJSONProvider):
+    def default(self, o):
+        if isinstance(o, date) or isinstance(o, datetime):
+            return o.isoformat()
+        return super().default(o)
+
+
 
 # Setup app and Cors
 
 app = Flask(__name__)
+app.json = UpdatedJSONProvider(app)
 CORS(app, origins=["http://www.defending.earth", "https://www.defending.earth"])
 
 
@@ -49,6 +63,16 @@ def get_object(key: str):
         return "", 404
 
     return asteroid_collector.get_merge(data), 200
+
+
+# Detailed object
+@app.route("/api/objects/<key>/missions/", methods=["GET"])
+def get_missions(key: str):
+    start_date = request.args.get('start_date')
+    end_date = request.args.get('end_date')
+    data = mission_design.get_from_id(key, start_date, end_date)
+
+    return data, 200
 
 
 @app.route("/api/objects/<key>/orbit/", methods=["GET"])
