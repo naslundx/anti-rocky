@@ -2,6 +2,7 @@ import geopandas as gpd
 import math
 from shapely.geometry import Point
 
+from population import get_population_worldpop
 
 LAND_DATA = gpd.read_file("ne_110m_land.shp")
 
@@ -69,6 +70,7 @@ def calculate_impact(data, lat ,lon):
     on_land = is_on_land(lat, lon)
 
     scale = 1 if on_land else 0.1
+    population = get_population_worldpop(lon, lat, diameter*3*scale)
 
     calculations = simulate_impact(diameter, density, velocity)
     energy_megaton = calculations["energy_megaton"]
@@ -88,7 +90,7 @@ def calculate_impact(data, lat ,lon):
     circles.append({"lat": lat, "lon": lon, "radius": radius_light_km * 1000, "note": "not too bad", "color": "green"})
 
     return {
-        "casualties": 0,
+        "casualties": population,
         "other": f"Energy in megaton: {energy_megaton}",
         "circles": circles,
         "energy_megaton": energy_megaton,
