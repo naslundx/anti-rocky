@@ -89,8 +89,10 @@ async function updateInfo(key) {
   const diameter = `${Math.floor(data.estimated_diameter.meters.estimated_diameter_min)}–${Math.floor(data.estimated_diameter.meters.estimated_diameter_max)}`;
   const today = new Date();
 
-  let closestDistance = 0;
-  let closestDistanceDate = "";
+  let closestDistance = data.closest_miss_km;
+  let closestDistanceDate = data.closest_approach_date;
+  let relativeVelocity = data.relative_velocity_km_s;
+  /*
   data.close_approach_data.some((closeApproach) => {
     if (
       Date.parse(closeApproach.close_approach_date) >= today &&
@@ -103,6 +105,7 @@ async function updateInfo(key) {
       return true;
     }
   });
+  */
   asteroidClosestDistanceDate = closestDistanceDate;
 
   infoBox.innerHTML = `
@@ -112,8 +115,9 @@ async function updateInfo(key) {
     <div class="info-row"><div class="info-label">Diameter</div><div>${diameter} meters</div></div>
     <div class="info-row"><div class="info-label">Orbit length</div><div>${Math.floor(data.orbital_data.orbital_period)} days</div></div>
     <div class="info-row"><div class="info-label">Notes</div><div>?</div></div>
-    <div class="info-row"><div class="info-label">Closest distance</div><div>${closestDistance} km</div></div>
+    <div class="info-row"><div class="info-label">Closest distance</div><div>${Math.floor(closestDistance)} km</div></div>
     <div class="info-row"><div class="info-label">Date</div><div>${closestDistanceDate}</div></div>
+    <div class="info-row"><div class="info-label">Relative velocity:</div><div>${Math.floor(relativeVelocity)} km/s</div></div>
   `;
 
   window.asteroidOrbit?.updateOrbit(data);

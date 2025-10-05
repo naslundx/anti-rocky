@@ -64,7 +64,7 @@ def simulate_impact( diameter, density, velocity):
 
 def calculate_impact(data, lat ,lon):
     diameter = float(data["estimated_diameter"]["meters"]["estimated_diameter_max"])
-    velocity = 17  # TODO
+    velocity = float(data["relative_velocity_km_s"])
     density = 3000  # TODO
     on_land = is_on_land(lat, lon)
 

@@ -34,13 +34,18 @@ class NeoClient:
                 # Filter out all non-hazardous
                 if not neo_object.get("is_potentially_hazardous_asteroid", True):
                     continue
-                computed_neo_objects.append({
-                    "name": neo_object["name"],
-                    "id": neo_object["id"],
-                })
+
+                computed_neo_objects.append(neo_object)
         return computed_neo_objects
 
     def get(self, key: str):
         url = self.url(f"neo/{key}")
         response = requests.get(url).json()
+
+        for local_data in self.local_store:
+            if local_data["id"] == key:
+                for key, value in local_data.items():
+                    response[key] = value
+
+        print(response)
         return response
