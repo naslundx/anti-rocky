@@ -1,3 +1,4 @@
+from functools import lru_cache
 
 import requests
 
@@ -8,6 +9,7 @@ class SBDBClient:
     def __init__(self):
         pass
 
+    @lru_cache()
     def get(self, key: str):
         url = f"{self.BASE_URL}?sstr={key}"
         response = requests.get(url).json()

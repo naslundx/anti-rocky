@@ -1,5 +1,7 @@
 import logging
 import json
+from functools import lru_cache
+
 import requests
 
 
@@ -19,6 +21,7 @@ class NeoClient:
             pre = pre + path
         return pre + f"?api_key={self.api_key}"
 
+    @lru_cache()
     def list(self, start_date=None, end_date=None, use_api=False):
         if not use_api:
             return self.local_store
@@ -38,6 +41,7 @@ class NeoClient:
                 computed_neo_objects.append(neo_object)
         return computed_neo_objects
 
+    @lru_cache()
     def get(self, key: str):
         url = self.url(f"neo/{key}")
         response = requests.get(url).json()

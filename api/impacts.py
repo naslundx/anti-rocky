@@ -25,7 +25,7 @@ def get_feasibility(diameter):
     return {"booster": 0, "laser": 0, "kinetic_impact": 0, "tungsten": 0, "tungsten_nuke": 4 }
 
 
-def simulate_impact( diameter, density, velocity):
+def simulate_impact(diameter, density, velocity):
     radius = diameter / 2
     volume = (4/3) * 3.1415 * radius**3
     mass = density * volume
@@ -81,8 +81,6 @@ def calculate_impact(data, lat, lon):
     velocity = float(data["relative_velocity_km_s"])
     density = 3000  # TODO
     on_land = is_on_land(lat, lon)
-
-    scale = 1 if on_land else 0.1
 
     calculations = simulate_impact(diameter, density, velocity)
     energy_megaton = calculations["energy_megaton"]

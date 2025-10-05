@@ -1,4 +1,5 @@
 import logging
+from functools import lru_cache
 
 import requests
 from datetime import date
@@ -11,6 +12,7 @@ class MissionDesignClient:
     AU = 149_597_870_700
     BASE_URL = "https://ssd-api.jpl.nasa.gov/mdesign.api"
 
+    @lru_cache()
     def get_from_id(self, key, date_start: date | str, date_end: date | str):
         date_start = date.fromisoformat(date_start) if isinstance(date_start, str) else date_start
         date_end = date.fromisoformat(date_end) if isinstance(date_end, str) else date_end

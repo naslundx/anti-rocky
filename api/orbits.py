@@ -1,3 +1,5 @@
+from functools import lru_cache
+
 import numpy as np
 import astropy.units as u
 from astropy.constants import G, M_sun
@@ -10,6 +12,7 @@ def generate_epochs(start_epoch, dt=1, n_steps=10):
     return [start_epoch + offset * u.day for offset in offsets]
 
 
+@lru_cache()
 def propagateKeplerToHeliocentricXYZ(a, e, i, raan, argp, M0, epoch0, epoch):
     """
     Propagate a Keplerian orbit around the Sun using Astropy.
@@ -75,6 +78,7 @@ def propagateKeplerToHeliocentricXYZ(a, e, i, raan, argp, M0, epoch0, epoch):
     return np.array([x, y, z]) * u.AU
 
 
+@lru_cache()
 def compute_orbit(data, start, dt=1, steps=1000):
     epochs = generate_epochs(Time(start, scale="tdb"), dt=dt, n_steps=steps)
 
@@ -95,6 +99,7 @@ def compute_orbit(data, start, dt=1, steps=1000):
     return orbit
 
 
+@lru_cache()
 def compute_earth_orbit(start, dt=1, steps=366):
     data = {
         "a": 1.00000018 * u.AU,
