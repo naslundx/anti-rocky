@@ -82,13 +82,13 @@ def calculate_impact(data, lat ,lon):
 
     circles = []
 
+    circles.append({"lat": lat, "lon": lon, "radius": radius_light_km * 1000, "note": "not too bad", "color": "green"})
+    circles.append({"lat": lat, "lon": lon, "radius": radius_medium_km * 1000, "note": "less danger", "color": "yellow"})
+    circles.append({"lat": lat, "lon": lon, "radius": radius_heavy_km * 1000, "note": "DANGER", "color": "orange"})
+
     if on_land:
         circles.append(
             {"lat": lat, "lon": lon, "radius": radius_extreme_km * 1000, "note": "BOOOOOM", "color": "red"})
-
-    circles.append({"lat": lat, "lon": lon, "radius": radius_heavy_km * 1000, "note": "DANGER", "color": "orange"})
-    circles.append({"lat": lat, "lon": lon, "radius": radius_medium_km * 1000, "note": "less danger", "color": "yellow"})
-    circles.append({"lat": lat, "lon": lon, "radius": radius_light_km * 1000, "note": "not too bad", "color": "green"})
 
     return {
         "casualties": population,
