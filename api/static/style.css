@@ -194,3 +194,6 @@ div#tab-3 {
     min-height: 0;
     height: auto;
 }
+img.logo {
+    height: 60px;
+}

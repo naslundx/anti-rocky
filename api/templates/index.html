@@ -8,7 +8,7 @@
         </title>
         <link
             rel="icon"
-            href="{{ url_for('static', filename='favicon.svg') }}"
+            href="{{ url_for('static', filename='favicon.ico') }}"
         />
         <link
             rel="stylesheet"
@@ -34,27 +34,30 @@
     </head>
     <body>
         <header>
-            <div>
-                <h1>Defending Earth</h1>
-                <div class="subtitle">
-                    <p>
-                        By the Anti-Rocky team:
-                        <a
-                            href="https://www.linkedin.com/in/daniel-hansson-46750778/"
-                            >Daniel Hansson</a
-                        >,
-                        <a href="https://www.linkedin.com/in/jniklasson/"
-                            >Johan Niklasson</a
-                        >,
-                        <a href="https://www.linkedin.com/in/naslundx/"
-                            >Marcus Näslund</a
-                        >
-                        - for the NASA Space Apps Challenge 2025 (<a
-                            href="https://www.spaceappschallenge.org/2025/challenges/meteor-madness/"
-                            >Meteor Madness</a
-                        >) in Göteborg, Sweden.
-                    </p>
-                </div>
+            <img
+                class="logo"
+                src="{{ url_for('static', filename='logo.png') }}"
+            />
+            <div class="subtitle">
+                <p>
+                    By the Anti-Rocky team:
+                    <a
+                        href="https://www.linkedin.com/in/daniel-hansson-46750778/"
+                        >Daniel Hansson</a
+                    >,
+                    <a href="https://www.linkedin.com/in/jniklasson/"
+                        >Johan Niklasson</a
+                    >,
+                    <a href="https://www.linkedin.com/in/naslundx/"
+                        >Marcus Näslund</a
+                    >
+                </p>
+                <p>
+                    for the NASA Space Apps Challenge 2025 (<a
+                        href="https://www.spaceappschallenge.org/2025/challenges/meteor-madness/"
+                        >Meteor Madness</a
+                    >) in Göteborg, Sweden.
+                </p>
             </div>
         </header>
 
