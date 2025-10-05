@@ -386,4 +386,28 @@ var map;
     const { lat, lng } = e.latlng;
     updateImpact(currentKey, lat, lng);
   });
+
+  const legend = L.control({ position: "bottomright" });
+
+  legend.onAdd = function (map) {
+    var div = L.DomUtil.create("div", "info legend"),
+      grades = ["Red", "Orange", "Yellow", "Green"],
+      labels = ["Death", "Kinda death", "Not so bad", "Meh"];
+
+    // Add semi-transparent background to the legend
+    div.innerHTML += "<h4>Legend</h4>";
+
+    for (var i = 0; i < grades.length; i++) {
+      div.innerHTML +=
+        '<i style="background:' +
+        grades[i] +
+        '">&nbsp;&nbsp;&nbsp;&nbsp;</i> ' +
+        labels[i] +
+        "<br>";
+    }
+
+    return div;
+  };
+
+  legend.addTo(map);
 })();
